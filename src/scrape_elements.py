@@ -174,7 +174,7 @@ websites = {
             'page-query' : "p",
             'url' : "https://www.istanbulbilisim.com/",
             'sitemap' : "https://www.istanbulbilisim.com/sitemap.xml",
-            'sitemap-category' : "https://www.trendyol.com/sitemap_categories.xml",
+            'sitemap-category' : "https://www.istanbulbilisim.com/sitemap_categories.xml",
             'non-xml-map' : False
         },
     "amazon.tr" : 
@@ -217,14 +217,14 @@ websites = {
                     'price': 'span',
                     'price_regex' : '.*price.*',
                     'old_price': ''
-                }
-        },
+                },
             'page-query' : default_page_query,
             'url' : "https://www.vatanbilgisayar.com/",
             'sitemap' : "https://www.vatanbilgisayar.com/sitemap.aspx",
             'sitemap-category' : "",
             'non-xml-map' : True
             #Vatan has sitemap xml but its sucks! so using link extraction form aspx would be better
+        }
 }
 
 
