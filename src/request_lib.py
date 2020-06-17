@@ -63,22 +63,42 @@ def GET_request (url):
     except Exception as e:
         print(" @@@@ ERROR IN SIMPLE GET @@@@ : "+ str(e))  
 
-#TODO - make it with multiple call 
+
+#TODO - make a func for asynch multiple call 
+
+#WARNING - when connection lost, it needs to retry.ATM it just throws exception.
+#Also you need to make it a stream!
 async def GET_request_async (url):
     """
     Asyncio used here with event based logic.
 
     we create event loops to parallel request process. It simply runs it on another thread and returns to main one.
     """  
+
+    session = requests.Session()
+    #response = requests.get("https://www.hepsiburada.com/masaustu-bilgisayarlar-c-34",headers=headers)#urllib.request.urlopen("https://www.google.com/").read()
+       
+    session.headers = headers
+    
+    #session.proxies = PROXIES
+    #print(session.cookies.get_dict())
+
+    retry = Retry(connect=1, backoff_factor=0.5)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+
+    #response = session.get(url,allow_redirects=True)
+
     loop = asyncio.get_event_loop()
     try:
-        future1 = loop.run_in_executor(None, requests.get, url)
+        future1 = loop.run_in_executor(None, session.get, url)
         #future2 = loop.run_in_executor(None, requests.get, url,headers )
         
         response1 = await future1
         #response2 = await future2
         
-        print("response1 : "+response1.url)
+        #print("response1 : "+response1.url)
 
         #print("response2 : "+response2.text)
         #print("headers : "+str(response2.headers)) 
