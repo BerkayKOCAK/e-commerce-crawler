@@ -62,3 +62,41 @@ def GET_request (url):
 
     except Exception as e:
         print(" @@@@ ERROR IN SIMPLE GET @@@@ : "+ str(e))  
+
+#TODO - make it with multiple call 
+async def GET_request_async (url):
+    """
+    Asyncio used here with event based logic.
+
+    we create event loops to parallel request process. It simply runs it on another thread and returns to main one.
+    """  
+    loop = asyncio.get_event_loop()
+    try:
+        future1 = loop.run_in_executor(None, requests.get, url)
+        #future2 = loop.run_in_executor(None, requests.get, url,headers )
+        
+        response1 = await future1
+        #response2 = await future2
+        
+        print("response1 : "+response1.url)
+
+        #print("response2 : "+response2.text)
+        #print("headers : "+str(response2.headers)) 
+        #print("response2 : "+response2.url) 
+    except Exception as e:
+        print(" @@@@ ERROR IN ASYNCH CALL @@@@ \n MESSAGE : "+ str(e))
+    return  response1.content 
+
+
+def GET_request_stream (url):
+    print("! UNDER CONSTRUCT !")
+    """
+    response = requests.get(url, stream=True)
+    # if the server sent a Gzip or Deflate compressed response, decompress
+    # as we read the raw stream:
+    response.raw.decode_content = True
+
+    events = ElementTree.iterparse(response.raw)
+    for event, elem in events:
+        # do something with `elem`
+    """
