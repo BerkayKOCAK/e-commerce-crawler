@@ -4,8 +4,6 @@ import asyncio
 from pathlib import Path
 from src import scrape_elements
 
-
-
 def create_vendor_folder(vendor):
     """
     vendor = Vendor name

@@ -2,8 +2,9 @@ from bs4 import BeautifulSoup
 import re
 import xml.etree.ElementTree as XML_operations
 from src import scrape_elements, request_lib
-
-
+from urllib.parse import unquote
+import lxml.etree as etree
+from xml.dom import minidom
 
 def sitemap_scrape(sitemap):
     #scrape given html content for product links, get all products
@@ -30,15 +31,53 @@ def product_search(product,sitemap_XML):
     sitemap_XML = XML content
     """
     productFound = []
+
     if sitemap_XML:
-       
-        root = XML_operations.fromstring(sitemap_XML) 
+ 
+        xmlstr = minidom.parseString(sitemap_XML).toprettyxml(indent="    ",newl="\n", encoding="UTF-8")
+        root = XML_operations.fromstring(xmlstr)
         print("searching "+product+ " in sitemap XML ")
-        #TODO - linear search atm. might improve
-        for child in root.iter():
-            if product in child.text:
-                productFound.append(child.text)
+        #print(root.findall("*"))
+
+        try:
+
+            for child in root.iter():
+                if(child.text != None):
+                    text = unquote(child.text, errors='strict')
+                    #print(child.tag, child.attrib)
+                    if product in text:
+                        productFound.append(text)
+                else:
+                    #print("Defect xml node found!")
+                    pass
+                    
+        except Exception as e:
+            print("ERROR "+str(e))
+            
+        #There might be special chracters for user's query. For example, süpürge --> supurge
+        if len(productFound) == 0:
+            print(" <<< Reconstructing the product string. >>>")
+            #convert special letters like ğ-ö to g-o
+            special_char_map = {ord('ä'):'a', ord('ü'):'u', ord('ö'):'o', ord('ş'):'s', ord('ç'):'c',ord('ğ'):'g'}
+            temp = product
+            product = product.translate(special_char_map)
+            if temp == product:
+                print(" <<< Reconstructed the product string but found none again :( >>>")
+                return productFound
+            productFound = product_search(product,sitemap_XML)
+
     return productFound
+
+
+
+def iterable(obj):
+    """Check if object is iterable"""
+    try:
+        iter(obj)
+    except Exception:
+        return False
+    else:
+        return True
 
 
 
@@ -50,7 +89,6 @@ def sub_page_URL_generator(vendor,page_URL,pageCount):
     """
     search_query = "?"+scrape_elements.websites[vendor]['page-query']
     constructed = page_URL + search_query + "=" + str(pageCount)
-    #print(" search_query == " +constructed)
     return constructed
 
 
@@ -104,19 +142,27 @@ async def find_last_page(vendor,page_URL):
 
 
 async def page_has_scrape(vendor,page_URL):
-
+    """
+    Check if the page has scrapable product elements.\n
+    Uses Beautiful Soup, looks up the product listing element which is predefined at scrape_elements.py\n
+    vendor = Vendor name\n
+    page_URL = URL of the page to check\n
+    """
     content = await request_lib.GET_request_async(page_URL)
-    soup = BeautifulSoup(content, "html.parser")
-    website = scrape_elements.websites[vendor]
+    if(content != None):
+        soup = BeautifulSoup(content, "html.parser")
+        website = scrape_elements.websites[vendor]
 
-    if website["product-scope"]["name"]:
-        regex_class_name = re.compile(website["product-scope"]["name"])
-    else:
-        regex_class_name = ''
-    
-    productElements = soup.find_all(website["product-scope"]["element"], class_= regex_class_name )
-    
-    if (productElements):
-        return True
+        if website["product-scope"]["name"]:
+            regex_class_name = re.compile(website["product-scope"]["name"])
+        else:
+            regex_class_name = ''
+        
+        productElements = soup.find_all(website["product-scope"]["element"], class_= regex_class_name )
+        
+        if (productElements):
+            return True
+        else:
+            return False
     else:
         return False

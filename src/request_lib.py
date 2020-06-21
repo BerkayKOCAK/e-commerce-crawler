@@ -74,15 +74,10 @@ async def GET_request_async (url):
 
     we create event loops to parallel request process. It simply runs it on another thread and returns to main one.
     """  
-
-    session = requests.Session()
-    #response = requests.get("https://www.hepsiburada.com/masaustu-bilgisayarlar-c-34",headers=headers)#urllib.request.urlopen("https://www.google.com/").read()
-       
-    session.headers = headers
-    
     #session.proxies = PROXIES
-    #print(session.cookies.get_dict())
-
+    
+    session = requests.Session()
+    session.headers = headers
     retry = Retry(connect=1, backoff_factor=0.5)
     adapter = HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
@@ -92,13 +87,16 @@ async def GET_request_async (url):
 
     loop = asyncio.get_event_loop()
     try:
+        
         future1 = loop.run_in_executor(None, session.get, url)
-        #future2 = loop.run_in_executor(None, requests.get, url,headers )
-        
         response1 = await future1
-        #response2 = await future2
+        redirected = response1.url != url
         
-        #print("response1 : "+response1.url)
+        #NOT QUITE MY TEMPO !!!!
+        if redirected:
+            return None
+        else:
+            pass
 
         #print("response2 : "+response2.text)
         #print("headers : "+str(response2.headers)) 

@@ -5,12 +5,12 @@ import asyncio
 
 
 async def init_crawler(productList,vendorList):
-    #check if vendor folders created, if not create
 
-    #string resulution for product name
+    #string resulution for excluded product names
 
     print(" VENDOR QUEUE STARTS")
     await vendor_queue(productList,vendorList)
+
 
 #For each vendor task (asynch) [vendor_queue]
     #queue each product as parallel tasks [product_queue] with parallel sub-tasks for that products each page (asynch)
@@ -43,7 +43,6 @@ async def vendor_queue(productList,vendorList):
             else:
                 print("sitemapCategory address: "+sitemapCategory)
                 #TODO - make it a stream call. Regular get might stuck for large xmls
-                #sitemap_XML = request_lib.GET_request_stream(sitemapCategory)
                 sitemap_XML = request_lib.GET_request(sitemapCategory)
                 print("Task Created For Vendor : "+vendor+" with regular sitemap")
                 vendorTasks.append(asyncio.ensure_future(product_queue(productList,vendor,sitemap_XML)))
@@ -99,6 +98,7 @@ async def product_queue(productList,vendor,sitemap_XML):
         print(" @@@@ ERROR IN PRODUCT QUEUE  @@@@ \n MESSAGE : "+ str(e))
 
 
+
 async def page_queue(vendor,product,pageList):
     """
     Page queuer for products. Queues each related page dependent jobs to product. 
@@ -119,7 +119,7 @@ async def page_queue(vendor,product,pageList):
 
             if(content):
                 #there are discount pages with the name of the product in it but in general
-                #those pages dont have a gird like product listings and/or sub pages.
+                #those pages dont have a grid like product listings and/or sub pages.
                 #so we need to prune those before working on them!
 
                 isScrapable = await page_work.page_has_scrape(vendor,page)
@@ -140,9 +140,6 @@ async def page_queue(vendor,product,pageList):
         print(" === ERROR IN PAGE QUEUE  === \n MESSAGE : "+ str(e))
 
 
-    #for each page in pageList,
-    #   write content to a file as html.
-    #   call sub_page_worker
 
 async def sub_page_worker(vendor,product,page,productFolder):
     """
@@ -163,5 +160,5 @@ async def sub_page_worker(vendor,product,page,productFolder):
         content = await request_lib.GET_request_async(subPage)
         pageCount = pageCount + 1
         utils.html_writer(productFolder,subPageName,content)
-        print("WROTE HTML "+ subPageName)
+        print("HTML PAGE WROTE "+ subPageName)
     print("**** SUB-PAGE Task is ended for : "+page+" **** ")

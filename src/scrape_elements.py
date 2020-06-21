@@ -174,8 +174,8 @@ websites = {
             'page-query' : "p",
             'url' : "https://www.istanbulbilisim.com/",
             'sitemap' : "https://www.istanbulbilisim.com/sitemap.xml",
-            'sitemap-category' : "https://www.istanbulbilisim.com/sitemap_categories.xml",
-            'non-xml-map' : False
+            'sitemap-category' : "https://www.istanbulbilisim.com/tum-kategoriler.html",
+            'non-xml-map' : True
         },
     "amazon.tr" : 
         {
