@@ -8,7 +8,7 @@ async def init_crawler(productList,vendorList):
 
     #string resulution for excluded product names
 
-    print(" VENDOR QUEUE STARTS")
+    print("VENDOR QUEUE STARTS")
     await vendor_queue(productList,vendorList)
 
 
@@ -36,7 +36,7 @@ async def vendor_queue(productList,vendorList):
             utils.create_vendor_folder(vendor)
 
             if (nonXML):
-                sitemapContent = await request_lib.GET_request_async(sitemap)
+                sitemapContent = await request_lib.GET_request_async(vendor,sitemap)
                 sitemapList = page_work.sitemap_scrape(vendor,sitemapContent)
                 print("Task Created For Vendor : "+vendor+ " with non-XML sitemap")
                 vendorTasks.append(asyncio.ensure_future(product_queue(productList,vendor,sitemapList,False)))
@@ -51,22 +51,10 @@ async def vendor_queue(productList,vendorList):
         while vendorTasks:
             print(" **** Vendor Tasks are started **** ")
             done, pending = await asyncio.wait(vendorTasks)
-            #print(done)
-            #print(pending)
             vendorTasks[:] = pending
         print("**** Vendor Tasks are ended **** ")
     except Exception as e:
         print(" @@@@ ERROR IN VENDOR QUEUE  @@@@ \n MESSAGE : "+ str(e))
-
-
-
-"""
-def vendor_queue_blocking(productList,vendorList):
-    
-    for vendor in vendorList:
-        print("VENDOR : "+vendor)
-        product_queue(productList,vendor)
-"""
 
 
 
@@ -82,7 +70,6 @@ async def product_queue(productList,vendor,sitemapHolder,isXml):
 
     try:
     
-        
         for product in productList:
             print("Task Created For Product : "+product)
             if isXml:
@@ -96,8 +83,6 @@ async def product_queue(productList,vendor,sitemapHolder,isXml):
         while productTasks:
             print(" **** Product Tasks are started for : "+vendor+" **** ")
             done, pending = await asyncio.wait(productTasks)
-            #print(done)
-            #print(pending)
             productTasks[:] = pending
         print("**** Product Tasks are ended for "+vendor+" **** ")
     except Exception as e:
@@ -117,28 +102,16 @@ async def page_queue(vendor,product,pageList):
     print(vendor+" - page queue, product : "+product)
     productFolder = utils.create_product_folder(vendor,product)
     try:
- 
+        
         for page in pageList:
             print("PAGE == "+page)
-            
-            content = await request_lib.GET_request_async(page)
-            
-            if(content):
-                #there are discount pages with the name of the product in it but in general
-                #those pages dont have a grid like product listings and/or sub pages.
-                #so we need to prune those before working on them!
-               
-                isScrapable = await page_work.page_has_scrape(vendor,content)
-                if( isScrapable ):
-                    pageName = utils.url_name_strip(page)
-                    utils.html_writer(productFolder,pageName,content)
-                    subPageTasks.append(asyncio.ensure_future(sub_page_worker(vendor,product,page,productFolder)))
-        
+            isScrapable = await page_work.page_has_scrape(vendor,page)
+            if( isScrapable ):
+                subPageTasks.append(asyncio.ensure_future(sub_page_worker(vendor,product,page,productFolder)))
+                
         while subPageTasks:
             print(" **** paging Tasks are started for product : "+product+" **** ")
             done, pending = await asyncio.wait(subPageTasks)
-            #print(done)
-            #print(pending)
             subPageTasks[:] = pending
         print("**** paging Task is ended for product : "+product+" **** ")
             
@@ -159,12 +132,14 @@ async def sub_page_worker(vendor,product,page,productFolder):
     
     pageCount = 0
     lastPageNum = await page_work.find_last_page(vendor,page)
+    
     print("last page num  for "+ page +" == "+str(lastPageNum))
-    while pageCount < lastPageNum:
+    while pageCount <= lastPageNum:
         subPage = page_work.sub_page_URL_generator(vendor,page,pageCount)
-        subPageName = utils.url_name_strip(subPage) + str(pageCount)
-        content = await request_lib.GET_request_async(subPage)
+        subPageName = utils.url_name_strip(subPage) + "-" + str(pageCount)
+        content = await request_lib.GET_request_async(vendor,subPage)
+        if content:
+            utils.html_writer(productFolder,subPageName,content)
+            print("HTML PAGE WRITTEN : "+ subPageName)
         pageCount = pageCount + 1
-        utils.html_writer(productFolder,subPageName,content)
-        print("HTML PAGE WRITTEN : "+ subPageName)
     print("**** SUB-PAGE Task is ended for : "+page+" **** ")

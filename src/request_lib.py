@@ -2,6 +2,7 @@
 import requests #it is a blocking library by nature !
 import asyncio
 import urllib
+from src import scrape_elements
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from urllib3.exceptions import NewConnectionError
@@ -28,36 +29,16 @@ def GET_request (url):
 
     Uses a session to let cookie based tracking
     """   
-    #print("Content Request for Vendor "+ vendor + " starts")
     try:
         session = requests.Session()
-        #response = requests.get("https://www.hepsiburada.com/masaustu-bilgisayarlar-c-34",headers=headers)#urllib.request.urlopen("https://www.google.com/").read()
-       
         session.headers = headers
-    
-        #session.proxies = PROXIES
-        #print(session.cookies.get_dict())
-
         retry = Retry(connect=1, backoff_factor=0.5)
         adapter = HTTPAdapter(max_retries=retry)
         session.mount('http://', adapter)
         session.mount('https://', adapter)
 
         response = session.get(url,allow_redirects=True)
-
-
-        #response = session.get(url)
-        
-        """print(response.url)
-        print(response.status_code)
-        print(response.text)
-        print(response.content)
-        print(response.headers)
-        print(session.cookies.get_dict())
-        """
-        print("Get Request for url "+ url + " starts")
         contentToReturn = response.content
-        print(response.status_code)
         return contentToReturn
 
     except Exception as e:
@@ -68,13 +49,47 @@ def GET_request (url):
 
 #WARNING - when connection lost, it needs to retry.ATM it just throws exception.
 #Also you need to make it a stream!
-async def GET_request_async (url):
+async def GET_request_async (vendor,url):
     """
-    Asyncio used here with event based logic.
+    Asyncio used here.
 
     we create event loops to parallel request process. It simply runs it on another thread and returns to main one.
     """  
     #session.proxies = PROXIES
+    website = scrape_elements.websites[vendor]
+    session = requests.Session()
+    session.headers = headers
+    retry = Retry(connect=1, backoff_factor=0.5)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    loop = asyncio.get_event_loop()
+
+    try:
+        
+        future = loop.run_in_executor(None, session.get, url)
+        response = await future
+        redirected = response.url != url
+        #It looks redirecting because sometimes while trying to find last sub page of a product,
+        #website simply redirects from none existing sub page query to main page.
+        
+        if website['redirect-allowed']: pass
+        else:
+            if redirected: return None
+            else: pass
+                
+
+    except Exception as e:
+        print(" @@@@ ERROR IN ASYNCH REQUEST @@@@ \n MESSAGE : "+ str(e))
+        return None
+    return  response.content 
+
+"""
+async def GET_request_async_subpage (url):
+
+   
+    Asyncio used here.\n
+    This function has redirect cancelling properties compared to other async get request.
     
     session = requests.Session()
     session.headers = headers
@@ -82,30 +97,17 @@ async def GET_request_async (url):
     adapter = HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
-
-    #response = session.get(url,allow_redirects=True)
-
     loop = asyncio.get_event_loop()
+
     try:
         
-        future1 = loop.run_in_executor(None, session.get, url)
-        response1 = await future1
-        redirected = response1.url != url
+        future = loop.run_in_executor(None, session.get, url)
+        response = await future
         
-        #It looks redirecting because sometimes while trying to find last sub page of a product, website simply redirects from none existing sub page query to main page.
-        if redirected:
-            
-            return None
-        else:
-            pass
-
-        #print("response2 : "+response2.text)
-        #print("headers : "+str(response2.headers)) 
-        #print("response2 : "+response2.url) 
     except Exception as e:
-        print(" @@@@ ERROR IN ASYNCH CALL @@@@ \n MESSAGE : "+ str(e))
+        print(" @@@@ ERROR IN SUB PAGE ASYNCH REQUEST @@@@ \n MESSAGE : "+ str(e))
         return None
-    return  response1.content 
+    return  response.content """
 
 
 def GET_request_stream (url):

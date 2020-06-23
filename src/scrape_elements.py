@@ -33,7 +33,8 @@ websites = {
             'url' : "https://www.hepsiburada.com/",
             'sitemap' : "https://www.hepsiburada.com/sitemaps/sitemap.xml",
             'sitemap-category' : "https://www.hepsiburada.com/sitemaps/kategoriler/sitemap_1.xml",
-            'non-xml-map' : False
+            'non-xml-map' : False,
+            'redirect-allowed': True #Some servers uses auto redirecting for query of non-existing pages, if thats the case make this True
         },
     
     "gittigidiyor" : 
@@ -58,7 +59,8 @@ websites = {
             'url' : "https://www.gittigidiyor.com/",
             'sitemap' : "https://www.gittigidiyor.com/servisler/site-haritasi",
             'sitemap-category' : "",
-            'non-xml-map' : True
+            'non-xml-map' : True,
+            'redirect-allowed': False
         },
     
     "n11" : 
@@ -83,7 +85,8 @@ websites = {
             'url' : "https://www.n11.com/",
             'sitemap' : "https://www.n11.com/site-haritasi",
             'sitemap-category' : "",
-            'non-xml-map' : True
+            'non-xml-map' : True,
+            'redirect-allowed': True
         },
     "teknosa" : 
         {
@@ -106,7 +109,8 @@ websites = {
             'url' : "https://www.teknosa.com/",
             'sitemap' : "https://www.teknosa.com/siteharitasi.xml",
             'sitemap-category' : "https://www.teknosa.com/medias/sys_master/sitemaps/sitemaps/1752952165/Category-tr-TRY.xml",
-            'non-xml-map' : False
+            'non-xml-map' : False,
+            'redirect-allowed': True
         },
     "media_markt" : 
         {
@@ -129,7 +133,8 @@ websites = {
             'url' : "https://www.mediamarkt.com.tr/",
             'sitemap' : "https://www.mediamarkt.com.tr/sitemap/siteindex.xml",
             'sitemap-category' : "https://www.mediamarkt.com.tr/sitemap/sitemap-productlist.xml",
-            'non-xml-map' : False
+            'non-xml-map' : False,
+            'redirect-allowed': True
         },
     "trendyol" : 
         {
@@ -152,7 +157,8 @@ websites = {
             'url' : "https://www.trendyol.com/",
             'sitemap' : "https://www.trendyol.com/sitemap",
             'sitemap-category' : "https://www.trendyol.com/sitemap_categories.xml",
-            'non-xml-map' : False
+            'non-xml-map' : False,
+            'redirect-allowed': True
         },
      "istanbulbilisim" : 
         {#this website has serious scripting issues, check when you are free !
@@ -175,7 +181,8 @@ websites = {
             'url' : "https://www.istanbulbilisim.com/",
             'sitemap' : "https://www.istanbulbilisim.com/sitemap.xml",
             'sitemap-category' : "https://www.istanbulbilisim.com/tum-kategoriler.html",
-            'non-xml-map' : True
+            'non-xml-map' : True,
+            'redirect-allowed': True
         },
     "amazon.tr" : 
         {
@@ -198,7 +205,8 @@ websites = {
             'url' : "https://www.amazon.com.tr/",
             'sitemap' : "https://www.amazon.com.tr/gp/site-directory/ref=topnav_sad",
             'sitemap-category' : "",
-            'non-xml-map' : True
+            'non-xml-map' : True,
+            'redirect-allowed': True
         },
     "vatan" : 
         {
@@ -222,8 +230,9 @@ websites = {
             'url' : "https://www.vatanbilgisayar.com/",
             'sitemap' : "https://www.vatanbilgisayar.com/sitemap.aspx",
             'sitemap-category' : "",
-            'non-xml-map' : True
-            #Vatan has sitemap xml but its sucks! so using link extraction form aspx would be better
+            'non-xml-map' : True,
+            'redirect-allowed': True
+ 
         }
 }
 

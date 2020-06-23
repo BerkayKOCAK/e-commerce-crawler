@@ -15,13 +15,17 @@ Additional libraries:
 """
 
 import asyncio
-from src import crawler
+from src import crawler, utils
 import unicodedata
 
 
 def main():
     
-    #check if assets folder available, else create
+    if (utils.file_integrity()):
+        pass#ask if user wants to use scraper
+    else:
+        pass
+        #lock scraper   
     
     #ask for product name (it can be multiple like xx,aa,bb,cc...)
         
@@ -32,7 +36,7 @@ def main():
         #show available vendors for crawling and scraping
     
     #with selected vendors, initialize crawling
-    asyncio.run(crawler.init_crawler(["süpürge"],["vatan"]))
+    asyncio.run(crawler.init_crawler(["süpürge"],["gittigidiyor"]))
 
 
 main()
