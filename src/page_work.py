@@ -3,26 +3,65 @@ import re
 import xml.etree.ElementTree as XML_operations
 from src import scrape_elements, request_lib
 from urllib.parse import unquote
-import lxml.etree as etree
 from xml.dom import minidom
 
-def sitemap_scrape(sitemap):
+#TODO - you need to manage slashes(/) on urls, there are some cases like https://// and zzz.com///product/...
+def sitemap_scrape(vendor,sitemapContent):
+
+    soup = BeautifulSoup(sitemapContent, "html.parser")
+    website = scrape_elements.websites[vendor]
+    allLinks = soup.find_all("a",href=True)
+    sitemapLinks = []
+
+    for link in allLinks:
+        
+        if ( "http" or "https") in link['href']:
+            ##print("TT : "+link['href'])
+            sitemapLinks.append(link['href'])
+
+        elif "www." in link['href']:
+            start = link['href'].find("/")
+            realLink = "https://"+link['href'][start:]
+            sitemapLinks.append(realLink)
+            #print("only www realLink : "+realLink)
+        
+        elif(website["url"] not in link) and ( len(link['href']) > 2 ):
+            linkText = link['href'].replace("/","")
+            realLink = website["url"] + linkText
+            sitemapLinks.append(realLink)
+            #print(newLink) 
+        
     #scrape given html content for product links, get all products
     #then return sitemap_parse_XML(scraped_sitemap_xml):
-    print("sitemap address "+str(sitemap))
-    return 0
+
+    return sitemapLinks
 
 
 
-def sitemap_parse_XML(sitemap_content):
-    #parse the xml
+def product_search(product,sitemapList):
     
-    print("sitemap XML ")
-    return 0
+    productFound = []
+    if sitemapList:
+        for link in sitemapList:
+            if product in link:
+                productFound.append(link)
+
+        if len(productFound) == 0:
+                print(" <<< Reconstructing the product string. >>>")
+                #convert special letters like ğ-ö to g-o
+                special_char_map = {ord('ä'):'a', ord('ü'):'u', ord('ö'):'o', ord('ş'):'s', ord('ç'):'c',ord('ğ'):'g'}
+                temp = product
+                product = product.translate(special_char_map)
+                if temp == product:
+                    print(" <<< Reconstructed the product string previous one was same :( >>>")
+                    return productFound
+                productFound = product_search(product,sitemapList)
+    print(productFound)
+    return productFound
 
 
 
-def product_search(product,sitemap_XML):
+def product_search_xml(product,sitemap_XML):
     """
     Searches corresponding product in the given XML content.\n
     It simply checks if XML object.text has product name as substring.\n
@@ -64,7 +103,7 @@ def product_search(product,sitemap_XML):
             if temp == product:
                 print(" <<< Reconstructed the product string but found none again :( >>>")
                 return productFound
-            productFound = product_search(product,sitemap_XML)
+            productFound = product_search_xml(product,sitemap_XML)
 
     return productFound
 
@@ -141,14 +180,15 @@ async def find_last_page(vendor,page_URL):
 
 
 
-async def page_has_scrape(vendor,page_URL):
+async def page_has_scrape(vendor,content):
     """
     Check if the page has scrapable product elements.\n
     Uses Beautiful Soup, looks up the product listing element which is predefined at scrape_elements.py\n
     vendor = Vendor name\n
     page_URL = URL of the page to check\n
     """
-    content = await request_lib.GET_request_async(page_URL)
+    #content = await request_lib.GET_request_async(page_URL)
+
     if(content != None):
         soup = BeautifulSoup(content, "html.parser")
         website = scrape_elements.websites[vendor]
@@ -161,8 +201,12 @@ async def page_has_scrape(vendor,page_URL):
         productElements = soup.find_all(website["product-scope"]["element"], class_= regex_class_name )
         
         if (productElements):
+            print(" 000> Page  is scrapable.")
             return True
         else:
+            print(" +++> Page  is not scrapable because there is no product scope in its dom elements.")
+            print("Product scope can be find at corresponding vendor's scrape_elements.py mapping. ")
             return False
     else:
+        print(" +++> Page  is not scrapable because there is no content !")
         return False

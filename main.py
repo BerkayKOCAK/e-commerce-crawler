@@ -32,7 +32,7 @@ def main():
         #show available vendors for crawling and scraping
     
     #with selected vendors, initialize crawling
-    asyncio.run(crawler.init_crawler(["süpürge"],["teknosa","vatan"]))
+    asyncio.run(crawler.init_crawler(["süpürge"],["vatan"]))
 
 
 main()

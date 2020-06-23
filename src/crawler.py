@@ -31,21 +31,22 @@ async def vendor_queue(productList,vendorList):
 
         for vendor in vendorList:
             nonXML = scrape_elements.websites[vendor]["non-xml-map"]
-            sitemap = scrape_elements.websites[vendor]["sitemap"]
-            sitemapCategory = scrape_elements.websites[vendor]["sitemap-category"]
+            sitemap = scrape_elements.websites[vendor]["sitemap"]                   #URL of page oriented sitemap.
+            sitemapCategory = scrape_elements.websites[vendor]["sitemap-category"]  #URL of xml oriented sitemap.
             utils.create_vendor_folder(vendor)
 
             if (nonXML):
-                sitemap_XML = page_work.sitemap_scrape(sitemap)
+                sitemapContent = await request_lib.GET_request_async(sitemap)
+                sitemapList = page_work.sitemap_scrape(vendor,sitemapContent)
                 print("Task Created For Vendor : "+vendor+ " with non-XML sitemap")
-                vendorTasks.append(asyncio.ensure_future(product_queue(productList,vendor,sitemap_XML)))
+                vendorTasks.append(asyncio.ensure_future(product_queue(productList,vendor,sitemapList,False)))
 
             else:
                 print("sitemapCategory address: "+sitemapCategory)
                 #TODO - make it a stream call. Regular get might stuck for large xmls
                 sitemap_XML = request_lib.GET_request(sitemapCategory)
                 print("Task Created For Vendor : "+vendor+" with regular sitemap")
-                vendorTasks.append(asyncio.ensure_future(product_queue(productList,vendor,sitemap_XML)))
+                vendorTasks.append(asyncio.ensure_future(product_queue(productList,vendor,sitemap_XML,True)))
 
         while vendorTasks:
             print(" **** Vendor Tasks are started **** ")
@@ -69,7 +70,7 @@ def vendor_queue_blocking(productList,vendorList):
 
 
 
-async def product_queue(productList,vendor,sitemap_XML):
+async def product_queue(productList,vendor,sitemapHolder,isXml):
     """
     Queues each product in productList as tasks.
     \nFor each product in productList;\n\t call page_queue to work on pages of the product\n
@@ -81,9 +82,14 @@ async def product_queue(productList,vendor,sitemap_XML):
 
     try:
     
+        
         for product in productList:
             print("Task Created For Product : "+product)
-            pageList = page_work.product_search(product,sitemap_XML)
+            if isXml:
+                pageList = page_work.product_search_xml(product,sitemapHolder)
+            else:
+                pageList = page_work.product_search(product,sitemapHolder)
+            
             print("product :"+ product +" pageList : "+str(pageList))
             productTasks.append(asyncio.ensure_future(page_queue(vendor,product,pageList)))
     
@@ -116,13 +122,13 @@ async def page_queue(vendor,product,pageList):
             print("PAGE == "+page)
             
             content = await request_lib.GET_request_async(page)
-
+            
             if(content):
                 #there are discount pages with the name of the product in it but in general
                 #those pages dont have a grid like product listings and/or sub pages.
                 #so we need to prune those before working on them!
-
-                isScrapable = await page_work.page_has_scrape(vendor,page)
+               
+                isScrapable = await page_work.page_has_scrape(vendor,content)
                 if( isScrapable ):
                     pageName = utils.url_name_strip(page)
                     utils.html_writer(productFolder,pageName,content)
@@ -160,5 +166,5 @@ async def sub_page_worker(vendor,product,page,productFolder):
         content = await request_lib.GET_request_async(subPage)
         pageCount = pageCount + 1
         utils.html_writer(productFolder,subPageName,content)
-        print("HTML PAGE WROTE "+ subPageName)
+        print("HTML PAGE WRITTEN : "+ subPageName)
     print("**** SUB-PAGE Task is ended for : "+page+" **** ")

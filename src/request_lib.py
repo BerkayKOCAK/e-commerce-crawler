@@ -92,8 +92,9 @@ async def GET_request_async (url):
         response1 = await future1
         redirected = response1.url != url
         
-        #NOT QUITE MY TEMPO !!!!
+        #It looks redirecting because sometimes while trying to find last sub page of a product, website simply redirects from none existing sub page query to main page.
         if redirected:
+            
             return None
         else:
             pass
@@ -103,6 +104,7 @@ async def GET_request_async (url):
         #print("response2 : "+response2.url) 
     except Exception as e:
         print(" @@@@ ERROR IN ASYNCH CALL @@@@ \n MESSAGE : "+ str(e))
+        return None
     return  response1.content 
 
 
