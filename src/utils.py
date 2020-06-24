@@ -4,6 +4,9 @@ import asyncio
 from pathlib import Path
 from src import scrape_elements
 from bs4 import BeautifulSoup
+from termcolor import colored
+
+
 
 def file_integrity():
     """
@@ -13,11 +16,13 @@ def file_integrity():
     if os.path.exists(absolutePath+"\\assets\\"): pass
     else: os.mkdir(absolutePath+"\\assets\\")
 
-    if os.path.exists(absolutePath+"\\scraper\\"): pass
+    if os.path.exists(absolutePath+"\\scraper.py") and os.path.exists(absolutePath+"\\csv_lib.py"): pass
     else: 
         print("Scraper folder not found!\nYou can not scrape the downloaded web pages without a scraper.\nPlease download it from = https://github.com/BerkayKOCAK/scraper-bot")
         return False
     return True
+
+
 
 def create_vendor_folder(vendor):
     """
@@ -32,6 +37,44 @@ def create_vendor_folder(vendor):
 
 
 
+def vendor_folder_mapping():
+    """
+    For scraper, checks every vendor's folder, then registers abendor as key and \"products\":{} object in the scarep_elements.pt file.\n
+    In the end it will be mapped to the dictionary(map) as key( vendor ) : value( products:{ } )
+    """
+    folder_list = os.listdir(str(Path(__file__).parent.absolute())+"\\assets\\")
+    if (len(folder_list) == 0):
+        raise Exception(" - NO VENDOR FOUND - \nPlease read instructions again!")
+    else:
+        for folder in folder_list:
+            scrape_elements.products[folder] = {"products":{}}
+
+
+def menu_add_vendors(vendor_selection):
+    """
+    #Adds vendors to choices array at vendor_selection dict. as follows,
+        'choices': [
+                    Separator(' = Products = '),
+                    {
+                        'name': 'Hepsiburada',
+                    },
+                    {
+                        'name': 'Vatan',
+                        "disabled":"cause"
+                        ...
+                    },
+                    ...
+    """    
+    new_vendor_selection = vendor_selection
+    
+    for vendor in scrape_elements.websites.keys():
+        temp = {"name":vendor}#,"disabled":"cause"}
+        new_vendor_selection[0]["choices"].append(temp)
+    new_vendor_selection[0]["choices"].append({"name":"None"})
+    return new_vendor_selection
+
+
+#############################################################################
 def create_product_folder(vendor,product):
     """
     product = Product name\n
@@ -45,6 +88,96 @@ def create_product_folder(vendor,product):
     return productPath
 
 
+
+
+#TODO - Make page aligner folder based not some funky symbol -> "_"
+# Bilgisayar/ -> Bilgisayar1,bilgisayar2,bilg3.....  
+# ££££ migrate to crawler utils
+def product_folder_mapping(vendors):
+    """ 
+    Maps the files with respect to product names.\n
+    Categorizes via vendor names.
+    Then aligns sub-pages with product categories.
+    """
+    for vendor in vendors:
+        vendor_path = str(Path(__file__).parent.absolute())+"\\assets\\"+str(vendor)
+        if os.path.exists(vendor_path):
+
+            productFolderList =  os.listdir(vendor_path)
+            #category_list = product_subpage_aligner(productFolderList)
+
+            for category in productFolderList:
+                productFiles = os.listdir(str(vendor_path + "\\" + category))
+                for file_holder in productFiles:
+                    if (file_holder.find(".html") < 0):
+                        print("file  "+file_holder+" cannot be scraped because it is not a html file !")
+                    else:
+                        #file_name = str(os.path.splitext(file_holder)[0])
+                        file_path = str(vendor_path + "\\" + category +"\\" + str(Path(file_holder)))
+                        try:
+                            scrape_elements.products.get(vendor)['products'][category].append(file_path)
+                        except KeyError:
+                            scrape_elements.products.get(vendor)['products'][category] = [file_path]
+    
+
+
+def menu_add_products(product_selection):
+    """
+    #Adds products to choices array at product_selection dict. as follows,
+        'choices': [
+                    Separator(' = Products = '),
+                    {
+                        'name': 'Vatan',
+                        "disabled":"cause"
+                        ...
+                    },
+                    ...
+    """    
+    new_product_selection = product_selection
+    flag = 0
+    for vendor in scrape_elements.products.keys():
+        
+        for product in scrape_elements.products.get(vendor)['products'].keys():
+            flag = 0
+            temp = {"name":product}#,"disabled":"cause"}
+            #print("choices : "+str(new_product_selection[0].get("choices")))
+            
+            for index in new_product_selection[0].get("choices"):
+              
+                #print("index: "+str(index))
+                if hasattr(index, 'get'):
+                    if product == index.get("name"): 
+                        flag = 1   
+                        break
+            if flag == 0:
+                new_product_selection[0].get("choices").append(temp)
+
+    return new_product_selection
+
+
+
+#TODO - make this folder based
+# ££££ migrate to crawler utils
+def product_subpage_aligner(file_list):
+    """
+        Returns category names of the products, for example if there is bilgisayar.html,  bilgisayar_1.html, bilgisayar_2.html
+        Takes bilgisayar.html as category and adds it to returned array as "bilgisayar". 
+        *Thus category name must NOT include "_" symbol and
+        *Sub pages which belongs to a category must include "_"
+    """
+    regex_array = []
+    for file_holder in file_list:
+        if (file_holder.find(".html") < 0):
+                print("File "+file_holder+" cannot be added as product, it is not a html file !")
+        else:
+            file_name = str(os.path.splitext(file_holder)[0])
+            if (file_name.find("_") < 0 ):
+                regex_array.append(file_name)
+            else:
+                pass
+
+    return regex_array
+#############################################################################
 
 def html_writer(filePath,pageName,content):
     """
@@ -85,6 +218,21 @@ def url_name_strip(pageName):
                 break
          
     return pageName[start:end]
+
+
+
+
+
+async def timeout(time):
+    """Simple timeout, takes time as seconds"""
+    await asyncio.sleep(time)
+
+
+def instructions():
+    print(colored('Welcome to e-commerce crawler', 'green'), colored('\nInstructions : ', 'yellow'))
+    print(colored('     * ', 'red'), colored('Enter a product to crawl around', 'cyan'))
+    print(colored('-------------------------------------------------------------------------------------------------------------------------------', 'grey'))
+
   
     
         

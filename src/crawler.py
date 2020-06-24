@@ -72,13 +72,14 @@ async def product_queue(productList,vendor,sitemapHolder,isXml):
     
         for product in productList:
             print("Task Created For Product : "+product)
-            if isXml:
-                pageList = page_work.product_search_xml(product,sitemapHolder)
-            else:
-                pageList = page_work.product_search(product,sitemapHolder)
+            
+            if isXml: pageList = page_work.product_search_xml(product,sitemapHolder)
+            else: pageList = page_work.product_search(product,sitemapHolder)
             
             print("product :"+ product +" pageList : "+str(pageList))
-            productTasks.append(asyncio.ensure_future(page_queue(vendor,product,pageList)))
+            if pageList: productTasks.append(asyncio.ensure_future(page_queue(vendor,product,pageList)))
+            else: print(" :::: No product found with name "+ product +" :::: ") 
+            
     
         while productTasks:
             print(" **** Product Tasks are started for : "+vendor+" **** ")
