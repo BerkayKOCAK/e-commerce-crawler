@@ -34,7 +34,7 @@ websites = {
             'sitemap' : "https://www.hepsiburada.com/sitemaps/sitemap.xml",
             'sitemap-category' : "https://www.hepsiburada.com/sitemaps/kategoriler/sitemap_1.xml",
             'non-xml-map' : False,
-            'redirect-allowed': True #Some servers uses auto redirecting for query of non-existing pages, if thats the case make this True
+            'redirect-allowed': False #Some servers uses auto redirecting for query of non-existing pages, if thats the case make this False, else make it True
         },
     
     "gittigidiyor" : 

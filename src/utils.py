@@ -7,6 +7,14 @@ from bs4 import BeautifulSoup
 from termcolor import colored
 
 
+#############################################################################
+
+
+
+
+#   MENU UTILS
+
+#############################################################################
 
 def file_integrity():
     """
@@ -18,24 +26,28 @@ def file_integrity():
 
     if os.path.exists(absolutePath+"\\scraper.py") and os.path.exists(absolutePath+"\\csv_lib.py"): pass
     else: 
-        print("Scraper folder not found!\nYou can not scrape the downloaded web pages without a scraper.\nPlease download it from = https://github.com/BerkayKOCAK/scraper-bot")
+        print("Scraper folder not found!\ncsv_lib.py not found!\nYou can not scrape the downloaded web pages without a scraper.\nPlease download it from = https://github.com/BerkayKOCAK/scraper-bot")
         return False
     return True
 
+async def timeout(time):
+    """Simple timeout, takes time as seconds"""
+    await asyncio.sleep(time)
 
 
-def create_vendor_folder(vendor):
-    """
-    vendor = Vendor name
-    """
-    vendorPath = str(Path(__file__).parent.absolute())+"\\assets\\"+str(vendor)
-    if os.path.exists(vendorPath):
-        pass
-    else:
-        os.mkdir(vendorPath)
-        print("created vendor folder for : "+vendor+" as "+  vendorPath)
+def instructions():
+    print(colored('Welcome to e-commerce crawler', 'green'), colored('\nInstructions : ', 'yellow'))
+    print(colored('     * ', 'red'), colored('Enter a product to crawl around', 'cyan'))
+    print(colored('-------------------------------------------------------------------------------------------------------------------------------', 'grey'))
+
+#############################################################################
 
 
+
+
+#   SCRAPER-VENDOR UTILS
+
+#############################################################################
 
 def vendor_folder_mapping():
     """
@@ -73,28 +85,19 @@ def menu_add_vendors(vendor_selection):
     new_vendor_selection[0]["choices"].append({"name":"None"})
     return new_vendor_selection
 
+#############################################################################
+
+
+
+
+#   SCRAPER-PRODUCT UTILS
 
 #############################################################################
-def create_product_folder(vendor,product):
-    """
-    product = Product name\n
-    vendor  = Vendor name
-    """
-    productPath = str(Path(__file__).parent.absolute())+"\\assets\\"+str(vendor)+"\\"+str(product)
-    if os.path.exists(productPath): pass
-    else:
-        print("created product folder for : "+product+" as "+  productPath)
-        os.mkdir(productPath)
-    return productPath
-
-
-
 
 #TODO - Make page aligner folder based not some funky symbol -> "_"
-# Bilgisayar/ -> Bilgisayar1,bilgisayar2,bilg3.....  
-# ££££ migrate to crawler utils
 def product_folder_mapping(vendors):
     """ 
+    For scraper,
     Maps the files with respect to product names.\n
     Categorizes via vendor names.
     Then aligns sub-pages with product categories.
@@ -123,7 +126,7 @@ def product_folder_mapping(vendors):
 
 def menu_add_products(product_selection):
     """
-    #Adds products to choices array at product_selection dict. as follows,
+    Adds products to choices array at product_selection dict. as follows,
         'choices': [
                     Separator(' = Products = '),
                     {
@@ -151,13 +154,13 @@ def menu_add_products(product_selection):
                         break
             if flag == 0:
                 new_product_selection[0].get("choices").append(temp)
+    new_product_selection[0]["choices"].append({"name":"None"})
 
     return new_product_selection
 
 
 
-#TODO - make this folder based
-# ££££ migrate to crawler utils
+#NO NEED!
 def product_subpage_aligner(file_list):
     """
         Returns category names of the products, for example if there is bilgisayar.html,  bilgisayar_1.html, bilgisayar_2.html
@@ -177,7 +180,43 @@ def product_subpage_aligner(file_list):
                 pass
 
     return regex_array
+
 #############################################################################
+
+
+
+
+#   CRAWLER UTILS
+
+#############################################################################
+
+def create_vendor_folder(vendor):
+    """
+    vendor = Vendor name
+    """
+    vendorPath = str(Path(__file__).parent.absolute())+"\\assets\\"+str(vendor)
+    if os.path.exists(vendorPath):
+        pass
+    else:
+        os.mkdir(vendorPath)
+        print("created vendor folder for : "+vendor+" as "+  vendorPath)
+
+
+
+def create_product_folder(vendor,product):
+    """
+    product = Product name\n
+    vendor  = Vendor name
+    """
+    productPath = str(Path(__file__).parent.absolute())+"\\assets\\"+str(vendor)+"\\"+str(product)
+    if os.path.exists(productPath): pass
+    else:
+        print("created product folder for : "+product+" as "+  productPath)
+        os.mkdir(productPath)
+    return productPath
+
+
+
 
 def html_writer(filePath,pageName,content):
     """
@@ -187,14 +226,17 @@ def html_writer(filePath,pageName,content):
     pageName = Name of the file\n
     content = html dom content, byte format.
     """
+    """
     soup = BeautifulSoup(content, "html.parser")
-    soup.find('script').decompose()
-    soup.find('meta').decompose()
-    soup.find('style').decompose()
-    soup.find('noscript').decompose()
-    soup.find('iframe').decompose()
-    soup.find('footer').decompose()
-    soup.find('header').decompose()
+    
+    soup.findAll('script').decompose()
+    soup.findAll('meta').decompose()
+    soup.findAll('style').decompose()
+    soup.findAll('noscript').decompose()
+    soup.findAll('iframe').decompose()
+    soup.findAll('footer').decompose()
+    soup.findAll('header').decompose()
+    """
     with open(filePath+"\\"+pageName+".html", "wb") as f:
         f.write(content)
 
@@ -223,15 +265,6 @@ def url_name_strip(pageName):
 
 
 
-async def timeout(time):
-    """Simple timeout, takes time as seconds"""
-    await asyncio.sleep(time)
-
-
-def instructions():
-    print(colored('Welcome to e-commerce crawler', 'green'), colored('\nInstructions : ', 'yellow'))
-    print(colored('     * ', 'red'), colored('Enter a product to crawl around', 'cyan'))
-    print(colored('-------------------------------------------------------------------------------------------------------------------------------', 'grey'))
 
   
     

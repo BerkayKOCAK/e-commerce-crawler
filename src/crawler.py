@@ -139,7 +139,7 @@ async def sub_page_worker(vendor,product,page,productFolder):
         subPage = page_work.sub_page_URL_generator(vendor,page,pageCount)
         subPageName = utils.url_name_strip(subPage) + "-" + str(pageCount)
         content = await request_lib.GET_request_async(vendor,subPage)
-        if content:
+        if content is not None:
             utils.html_writer(productFolder,subPageName,content)
             print("HTML PAGE WRITTEN : "+ subPageName)
         pageCount = pageCount + 1

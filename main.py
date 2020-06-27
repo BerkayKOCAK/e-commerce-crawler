@@ -23,6 +23,9 @@ from PyInquirer import style_from_dict, Token, prompt, Separator
 from pyfiglet import Figlet
 from termcolor import colored
 
+#Scraper = sc
+#Crawler = cw
+
 style1 = style_from_dict({
     Token.Separator: '#cc5454',
     Token.QuestionMark: '#673ab7 bold',
@@ -54,33 +57,49 @@ style3 = style_from_dict({
     Token.Question: '#FDDB5F',
 })
 
-templateCrawlingSelection = [
+templateScList = {
+        'type': 'list',
+        'message': 'What do you want scraper to work with ? \nWith new assets after the crawling operation, with currently available assets or both... ',
+        'name': 'operationList',
+        'choices': ["New Assets","Current Assets","Both"]
+    }
+
+templateScQuestion = {
+        'type': 'confirm',
+        'message': 'Do yo want to include scraping operations for files?',
+        'name': 'scrapingOpt',
+        'default': True,
+    }
+
+
+templateSameVendorQuestion = {
+        'type': 'confirm',
+        'message': 'Do you want to use same vendors at scraping operation for current files ? ',
+        'name': 'sameVendors',
+        'default': True,
+    }
+
+templateCwSelection = [
     {
         'type': 'checkbox',
         'message': 'Choose vendors for crawling',
-        'name': 'crawlingVendors',
+        'name': 'cw_vendors',
         'choices': [
-            Separator(' = Crawling Vendors = ')
+            Separator(' = Available Crawling Vendors = ')
         ],
         'validate': lambda answer: 'You must choose at least one topping.' \
             if len(answer) == 0 else True
-    },
-    {
-        'type': 'confirm',
-        'message': 'Do you want to use same vendors for scraping also ?',
-        'name': 'sameVendors',
-        'default': True,
-    },
+    }
 ]
 
-templateScrapingSelection = [
+templateScSelection = [
     
     {
         'type': 'checkbox',
         'message': 'Choose vendors for scraping',
-        'name': 'scrapingVendors',
+        'name': 'sc_vendors',
         'choices': [
-            Separator(' = Scraping Vendors = ')
+            Separator(' = Available Scraping Vendors = ')
            
         ],
         'validate': lambda answer: 'You must choose at least one topping.' \
@@ -92,10 +111,10 @@ templateProductSelection = [
     
     {
         'type': 'checkbox',
-        'message': 'Choose vendors for scraping',
-        'name': 'scrapingProducts',
+        'message': 'Choose products for scraping from assets.',
+        'name': 'sc_selectedProducts',
         'choices': [
-            Separator(' = Scraping Vendors = ')
+            Separator(' = Available Scraping Products = ')
            
         ],
         'validate': lambda answer: 'You must choose at least one topping.' \
@@ -115,7 +134,6 @@ templateProductInput = [
 ]
 
 
-
 def main():
     
     f = Figlet(font='cyberlarge')
@@ -123,64 +141,117 @@ def main():
     print(f.renderText(' * By Berkay * '))
 
     utils.instructions()
-
-    #TODO - ask user if it wants to scrape also
-
-    crawlingVendorSelection = utils.menu_add_vendors(templateCrawlingSelection)
-    scrapingVendorSelection = utils.menu_add_vendors(templateScrapingSelection)
-    crawlingVendors = prompt(crawlingVendorSelection, style=style1)
+    cw_vendorSelection = utils.menu_add_vendors(templateCwSelection)
+    sc_vendorSelection = utils.menu_add_vendors(templateScSelection)
     
-    if(len(crawlingVendors['crawlingVendors']) != 0):
+    try:
         
-        if (crawlingVendors['sameVendors']):
-            scrapingVendors = crawlingVendors['crawlingVendors']
+        useScraper = prompt(templateScQuestion, style=style1)
+       
+        if (useScraper["scrapingOpt"]):
+            sc_list = prompt(templateScList, style=style1)
+            cw_vendors = prompt(cw_vendorSelection, style=style1)
+            if(len(cw_vendors['cw_vendors']) != 0):
+
+                tempVendors = cw_vendors['cw_vendors']
+                templateSameVendorQuestion['message'] = templateSameVendorQuestion['message'] + " --> "+str(tempVendors)
+                if ("Both" or  "Current Assets") in sc_list['operationList']:
+                    sameVendors = prompt(templateSameVendorQuestion, style = style1)
+                    if (sameVendors['sameVendors']):
+                        sc_vendors = cw_vendors['cw_vendors']
+                    else:
+                        sc_vendors = prompt(sc_vendorSelection, style=style1)
+                        sc_vendors = sc_vendors["sc_vendors"]
+                    print("Selected Vendors for Cw: " + str(cw_vendors['cw_vendors']))
+                    print("Selected Vendors for Sc: " + str(sc_vendors))
+                else: pass
+                
+               
+
+            elif(not useScraper["scrapingOpt"]): pass
+            else: exit(0)
+
+        else: pass
+        
+        asyncio.run(utils.timeout(1))
+
+        if (utils.file_integrity() and useScraper["scrapingOpt"]):
+
+            if "Both" in sc_list['operationList']:
+
+                if ("None" in cw_vendors['cw_vendors'] and "None" in sc_vendors ):
+                    print(colored('No vendor selected for both operations, no need to stay in run-time then.', 'red'))
+                    exit(0)
+
+                elif "None" in cw_vendors['cw_vendors']:
+                    print(colored('Only scraper will operate', 'red'))
+                    utils.vendor_folder_mapping()
+                    utils.product_folder_mapping(sc_vendors)
+
+                    sc_productSelection = utils.menu_add_products(templateProductSelection)
+                    sc_selectedProducts = prompt(sc_productSelection, style=style2)
+
+                    asyncio.run(scraper.scraper_init(sc_vendors,sc_selectedProducts['sc_selectedProducts']))
+                
+                elif "None" in sc_vendors:
+                    print(colored('Only crawler will operate', 'red'))
+                    cw_selectedProducts = prompt(templateProductInput, style=style3)
+                    cw_productsArr = str(cw_selectedProducts).split(",")
+                    asyncio.run(crawler.init_crawler(cw_productsArr,cw_vendors['cw_vendors']))
+                    
+                else:
+                    print(colored('First, scraper will for for current assets,\nThen, crawler will get desired products content\nAt last, scraper will work for new assets', 'red'))
+                    utils.vendor_folder_mapping()
+                    utils.product_folder_mapping(sc_vendors)
+
+                    cw_selectedProducts = prompt(templateProductInput, style=style2)
+                    cw_productsArr = str(cw_selectedProducts["products"]).split(",")
+                   
+                    print(cw_productsArr)
+                    sc_productSelection = utils.menu_add_products(templateProductSelection)
+                    sc_selectedProducts = prompt(sc_productSelection, style=style2)
+
+                    asyncio.run(crawler.init_crawler (cw_productsArr,cw_vendors['cw_vendors']) )
+                    asyncio.run(scraper.scraper_init (sc_vendors,sc_selectedProducts['sc_selectedProducts']) )
+                    asyncio.run(utils.timeout(1))
+
+                    utils.vendor_folder_mapping()
+                    utils.product_folder_mapping(sc_vendors)
+                    print(colored(' -- Scraper works for new assets -- ', 'cyan'))
+                    #work with same vendors at crawler selection
+                    sc_productSelection = utils.menu_add_products(cw_vendors['cw_vendors'])
+                    sc_selectedProducts = prompt(sc_productSelection, style=style2)
+
+            elif "Current Assets" in sc_list['operationList']:
+                    print(colored('Only scraper will operate', 'red'))
+
+                    utils.vendor_folder_mapping()
+                    utils.product_folder_mapping(sc_vendors)
+
+                    sc_productSelection = utils.menu_add_products(templateProductSelection)
+                    sc_selectedProducts = prompt(sc_productSelection, style=style2)
+
+                    asyncio.run(scraper.scraper_init(sc_vendors,sc_selectedProducts['sc_selectedProducts']))
+
+            else:
+                 print(colored('Scraper will work only for incoming new assets after crawling ends.', 'red'))
+                 asyncio.run(crawler.init_crawler(cw_selectedProducts['products'],cw_vendors['cw_vendors']))
+                 #can also ask in here to filter scraping among new vendors.
+                 asyncio.run(scraper.scraper_init(sc_vendors,cw_vendors['cw_vendors']))
+
+
+
         else:
-            scrapingVendors = prompt(scrapingVendorSelection, style=style1)
-            scrapingVendors = scrapingVendors["scrapingVendors"]
-        
-        print("Selected Vendors for Crawling: " + str(crawlingVendors['crawlingVendors']))
-        print("Selected Vendors for Scraping: " + str(scrapingVendors))
-    else: exit(0)
-    
-    asyncio.run(utils.timeout(1))
-
-    if (utils.file_integrity()):
-
-        if ("None" in crawlingVendors['crawlingVendors'] and "None" in scrapingVendors ):
-            print(colored('No vendor selected for both operations, no need to stay in run-time then.', 'red'))
-            exit(0)
-
-        elif "None" in crawlingVendors['crawlingVendors']:
-            print(colored('Only scraper will operate', 'red'))
-            utils.vendor_folder_mapping()
-            utils.product_folder_mapping(scrapingVendors)
-            scrapingProductSelection = utils.menu_add_products(templateProductSelection)
-            scrapingProducts = prompt(scrapingProductSelection, style=style2)
-            asyncio.run(scraper.scraper_init(scrapingVendors,scrapingProducts['scrapingProducts']))
-        
-        elif "None" in scrapingVendors:
             print(colored('Only crawler will operate', 'red'))
-            crawlingProducts = prompt(templateProductInput, style=style3)
-            crawlingProductsArray = str(crawlingProducts).split(",")
-            asyncio.run(crawler.init_crawler(crawlingProductsArray,crawlingVendors['crawlingVendors']))
-            
-        else:
-            utils.vendor_folder_mapping()
-            utils.product_folder_mapping(scrapingVendors)
-            crawlingProducts = prompt(templateProductInput, style=style2)
-            scrapingProductSelection = utils.menu_add_products(templateProductSelection)
-            scrapingProducts = prompt(scrapingProductSelection, style=style2)
-            asyncio.run(crawler.init_crawler(crawlingProducts,crawlingVendors['crawlingVendors']))
-            asyncio.run(scraper.scraper_init(scrapingVendors,scrapingProducts['scrapingProducts']))
+            cw_vendors = prompt(cw_vendorSelection, style=style1)
+            cw_selectedProducts = prompt(templateProductInput, style=style3)
+            cw_productsArr = str(cw_selectedProducts["products"]).split(",")
+            asyncio.run(crawler.init_crawler(cw_productsArr,cw_vendors['cw_vendors']))
 
-    else:
-        print(colored('Could not find scraper.py and csv_lib.py. Thus, only crawler will operate', 'red'))
-        crawlingProducts = prompt(templateProductInput, style=style3)
-        crawlingProductsArray = str(crawlingProducts).split(",")
-        asyncio.run(crawler.init_crawler(crawlingProductsArray,crawlingVendors['crawlingVendors']))
+    except Exception as identifier:
+        print("ERROR IN MAIN : "+str(identifier))
 
-
-    #ask for words to exclude at search
-    #ask for products support adjectives, Ex supurge -> elektirikli == search(elektrikli and supurge)
+    #TODO - ask for words to exclude at search
+    #TODO - ask for products support adjectives, Ex supurge -> elektirikli == search(elektrikli and supurge)
     
 main()

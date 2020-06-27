@@ -18,19 +18,14 @@ import asyncio
 
 async def scraper_init (selected_vendors,selected_products):
     """ Initializer for scraping operation """
-    print("SCARAPER STARTS : ")
-    for vendor in selected_vendors:
-        print(" - Vendor : "+vendor)
-        #TODO - check if vendors.products is empty 
-        #print("situation : "+str(bool(scrape_elements.products.get(vendor)['products'])))
-        await scraper_queue(vendor,selected_products)
-    
-    #maybe also parallelize vendors instead of a blocking loop
-    """await asyncio.gather(
-            scraper_queue("A",["hepsiburada"],file_list),
-            scraper_queue("B",["hepsiburada"],file_list),
-            scraper_queue("C",["hepsiburada"],file_list),
-        ) """
+    if ("None" in selected_vendors) or ("None" in selected_products): 
+        print("None selected at scraper selection for current assets!")
+        return None
+    else:
+        print("SCARAPER STARTS : ")
+        for vendor in selected_vendors:
+            print(" - Vendor : "+vendor)
+            await scraper_queue(vendor,selected_products)
 
 
 
