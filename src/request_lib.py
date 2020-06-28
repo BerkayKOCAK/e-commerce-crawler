@@ -45,8 +45,6 @@ def GET_request (url):
         print(" @@@@ ERROR IN SIMPLE GET @@@@ : "+ str(e))  
 
 
-#TODO - make a func for asynch multiple call 
-
 #WARNING - when connection lost, it needs to retry.ATM it just throws exception.
 #Also you need to make it a stream!
 async def GET_request_async (vendor,url):
@@ -84,32 +82,7 @@ async def GET_request_async (vendor,url):
         return None
     return  response.content 
 
-"""
-async def GET_request_async_subpage (url):
-
-   
-    Asyncio used here.\n
-    This function has redirect cancelling properties compared to other async get request.
-    
-    session = requests.Session()
-    session.headers = headers
-    retry = Retry(connect=1, backoff_factor=0.5)
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
-    loop = asyncio.get_event_loop()
-
-    try:
-        
-        future = loop.run_in_executor(None, session.get, url)
-        response = await future
-        
-    except Exception as e:
-        print(" @@@@ ERROR IN SUB PAGE ASYNCH REQUEST @@@@ \n MESSAGE : "+ str(e))
-        return None
-    return  response.content """
-
-
+#TODO - stream
 def GET_request_stream (url):
     print("! UNDER CONSTRUCT !")
     """

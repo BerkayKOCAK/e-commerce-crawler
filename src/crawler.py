@@ -6,7 +6,7 @@ import asyncio
 
 async def init_crawler(productList,vendorList):
 
-    #string resulution for excluded product names
+    #TODO - string resulution for excluded product names
 
     print("VENDOR QUEUE STARTS")
     await vendor_queue(productList,vendorList)
@@ -76,7 +76,7 @@ async def product_queue(productList,vendor,sitemapHolder,isXml):
             if isXml: pageList = page_work.product_search_xml(product,sitemapHolder)
             else: pageList = page_work.product_search(product,sitemapHolder)
             
-            print("product :"+ product +" pageList : "+str(pageList))
+            print("Product :"+ product +" pageList : "+str(pageList))
             if pageList: productTasks.append(asyncio.ensure_future(page_queue(vendor,product,pageList)))
             else: print(" :::: No product found with name "+ product +" :::: ") 
             
@@ -111,10 +111,10 @@ async def page_queue(vendor,product,pageList):
                 subPageTasks.append(asyncio.ensure_future(sub_page_worker(vendor,product,page,productFolder)))
                 
         while subPageTasks:
-            print(" **** paging Tasks are started for product : "+product+" **** ")
+            print(" **** Paging Tasks are started for product : "+product+" **** ")
             done, pending = await asyncio.wait(subPageTasks)
             subPageTasks[:] = pending
-        print("**** paging Task is ended for product : "+product+" **** ")
+        print("**** Paging Task is ended for product : "+product+" **** ")
             
     except Exception as e:
         print(" === ERROR IN PAGE QUEUE  === \n MESSAGE : "+ str(e))
@@ -134,7 +134,7 @@ async def sub_page_worker(vendor,product,page,productFolder):
     pageCount = 0
     lastPageNum = await page_work.find_last_page(vendor,page)
     
-    print("last page num  for "+ page +" == "+str(lastPageNum))
+    print("Number of pages for "+ page +" is "+str(lastPageNum))
     while pageCount <= lastPageNum:
         subPage = page_work.sub_page_URL_generator(vendor,page,pageCount)
         subPageName = utils.url_name_strip(subPage) + "-" + str(pageCount)

@@ -62,6 +62,7 @@ def vendor_folder_mapping():
             scrape_elements.products[folder] = {"products":{}}
 
 
+
 def menu_add_vendors(vendor_selection):
     """
     #Adds vendors to choices array at vendor_selection dict. as follows,
@@ -82,7 +83,8 @@ def menu_add_vendors(vendor_selection):
     for vendor in scrape_elements.websites.keys():
         temp = {"name":vendor}#,"disabled":"cause"}
         new_vendor_selection[0]["choices"].append(temp)
-    new_vendor_selection[0]["choices"].append({"name":"None"})
+    if("None" not in new_vendor_selection[0]["choices"]):
+        new_vendor_selection[0]["choices"].append({"name":"None"})
     return new_vendor_selection
 
 #############################################################################
@@ -154,7 +156,8 @@ def menu_add_products(product_selection):
                         break
             if flag == 0:
                 new_product_selection[0].get("choices").append(temp)
-    new_product_selection[0]["choices"].append({"name":"None"})
+    if("None"not in new_product_selection[0]["choices"]):
+        new_product_selection[0]["choices"].append({"name":"None"})
 
     return new_product_selection
 
@@ -217,7 +220,6 @@ def create_product_folder(vendor,product):
 
 
 
-
 def html_writer(filePath,pageName,content):
     """
     Writes content of a html page with bytes.\n
@@ -226,19 +228,14 @@ def html_writer(filePath,pageName,content):
     pageName = Name of the file\n
     content = html dom content, byte format.
     """
-    """
     soup = BeautifulSoup(content, "html.parser")
+
+    for script in soup.findAll(["script","meta","style","noscript","iframe","footer","header"]):
+        script.decompose()
     
-    soup.findAll('script').decompose()
-    soup.findAll('meta').decompose()
-    soup.findAll('style').decompose()
-    soup.findAll('noscript').decompose()
-    soup.findAll('iframe').decompose()
-    soup.findAll('footer').decompose()
-    soup.findAll('header').decompose()
-    """
     with open(filePath+"\\"+pageName+".html", "wb") as f:
-        f.write(content)
+        f.write(soup.encode('utf-8'))
+
 
 
 def url_name_strip(pageName):
@@ -260,13 +257,3 @@ def url_name_strip(pageName):
                 break
          
     return pageName[start:end]
-
-
-
-
-
-
-  
-    
-        
-    

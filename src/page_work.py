@@ -41,9 +41,25 @@ def sitemap_scrape(vendor,sitemapContent):
 def product_search(product,sitemapList):
     
     productFound = []
+    productWords_Arr = []
+    if("-" in product):
+        productWords_Arr = product.split("-")
+    print("XXXXXXXXXXX")
+    print(productWords_Arr)
+
     if sitemapList:
+        
         for link in sitemapList:
-            if (product in link) and (link not in productFound):
+            
+            if (len(productWords_Arr) > 0 ):
+                count = 0
+                for word in productWords_Arr:
+                    if word in link:
+                        count += 1
+                if count != len(productWords_Arr): pass#print("False")
+                else: productFound.append(link)
+                  
+            elif (product in link) and (link not in productFound):
                 productFound.append(link)
 
         if len(productFound) == 0:
@@ -70,6 +86,10 @@ def product_search_xml(product,sitemap_XML):
     sitemap_XML = XML content
     """
     productFound = []
+    productWords_Arr = []
+    if("-" in product):
+        productWords_Arr = product.split("-")
+
 
     if sitemap_XML:
  
@@ -84,7 +104,14 @@ def product_search_xml(product,sitemap_XML):
                 if(child.text != None):
                     text = unquote(child.text, errors='strict')
                     #print(child.tag, child.attrib)
-                    if product in text:
+                    if (len(productWords_Arr) > 0 ):
+                        count = 0
+                        for word in productWords_Arr:
+                            if word in text:
+                                count += 1
+                        if count != len(productWords_Arr): pass#print("False")
+                        else: productFound.append(text)     
+                    elif product in text:
                         productFound.append(text)
                 else:
                     #print("Defect xml node found!")

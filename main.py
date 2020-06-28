@@ -126,7 +126,11 @@ templateProductInput = [
     
     {
         'type': 'input',
-        'message': 'Enter some products to crawl in web pages (put comma between multiple products and dont use spaces): ',
+        'message':  """
+                    Enter some products to crawl in web pages
+                    \n*If name of the product consists of multiple words, use \"-\" symbol between words as seperator
+                    \n*Put comma between multiple products and dont use spaces: """
+                    ,
         'name': 'products',
         'validate': lambda answer: 'You must choose at least one topping.' \
             if len(answer) == 0 else True
@@ -210,17 +214,21 @@ def main():
                     print(cw_productsArr)
                     sc_productSelection = utils.menu_add_products(templateProductSelection)
                     sc_selectedProducts = prompt(sc_productSelection, style=style2)
-
-                    asyncio.run(crawler.init_crawler (cw_productsArr,cw_vendors['cw_vendors']) )
-                    asyncio.run(scraper.scraper_init (sc_vendors,sc_selectedProducts['sc_selectedProducts']) )
+                    
+                    print(colored(' -- Scraper works for current assets -- ', 'cyan'))
                     asyncio.run(utils.timeout(1))
-
+                    asyncio.run(scraper.scraper_init (sc_vendors,sc_selectedProducts['sc_selectedProducts']) )
+                    print(colored(' -- Crawler Starts -- ', 'cyan'))
+                    asyncio.run(utils.timeout(1))
+                    asyncio.run(crawler.init_crawler (cw_productsArr,cw_vendors['cw_vendors']) )
+                  
                     utils.vendor_folder_mapping()
                     utils.product_folder_mapping(sc_vendors)
+
                     print(colored(' -- Scraper works for new assets -- ', 'cyan'))
-                    #work with same vendors at crawler selection
-                    sc_productSelection = utils.menu_add_products(cw_vendors['cw_vendors'])
+                    sc_productSelection = utils.menu_add_products(templateProductSelection)
                     sc_selectedProducts = prompt(sc_productSelection, style=style2)
+                    asyncio.run(scraper.scraper_init (cw_vendors['cw_vendors'],sc_selectedProducts['sc_selectedProducts']) )
 
             elif "Current Assets" in sc_list['operationList']:
                     print(colored('Only scraper will operate', 'red'))
@@ -239,8 +247,6 @@ def main():
                  #can also ask in here to filter scraping among new vendors.
                  asyncio.run(scraper.scraper_init(sc_vendors,cw_vendors['cw_vendors']))
 
-
-
         else:
             print(colored('Only crawler will operate', 'red'))
             cw_vendors = prompt(cw_vendorSelection, style=style1)
@@ -252,6 +258,5 @@ def main():
         print("ERROR IN MAIN : "+str(identifier))
 
     #TODO - ask for words to exclude at search
-    #TODO - ask for products support adjectives, Ex supurge -> elektirikli == search(elektrikli and supurge)
     
 main()
