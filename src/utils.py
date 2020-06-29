@@ -36,9 +36,13 @@ async def timeout(time):
 
 
 def instructions():
-    print(colored('Welcome to e-commerce crawler', 'green'), colored('\nInstructions : ', 'yellow'))
-    print(colored('     * ', 'red'), colored('Enter a product to crawl around', 'cyan'))
-    print(colored('-------------------------------------------------------------------------------------------------------------------------------', 'grey'))
+    print(colored('Welcome To E-Commerce Crawler', 'green'), colored('\nInstructions : ', 'yellow'))
+    print(colored('     * ', 'red'), colored('Crawler can operate with scraper, you need to add it to src/ folder as scraper.py', 'cyan'))
+    print(colored('     * ', 'red'), colored('If you are using my scraper you also need to put csv_lib.py under src/', 'cyan'))
+    print(colored('     * ', 'red'), colored('Operetable vendors are registered under src/scrape_elements.py, if you need to add new vendor just provide every object members like default vendors', 'cyan'))
+    print(colored('This crawler is open source version of my commercial crawler, if you are interested in more professional crawler for e-commerce websites contact me : berkay.kocak@hotmail.com', 'cyan'))
+    print(colored('If you have any issue or found a killer bug please open a github issue on the repository page.', 'cyan'))
+    print(colored('-------------------------------------------------------------------------------------------------------------------------------', 'red'))
 
 #############################################################################
 

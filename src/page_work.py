@@ -5,7 +5,6 @@ from src import scrape_elements, request_lib
 from urllib.parse import unquote
 from xml.dom import minidom
 
-#TODO - you need to manage slashes(/) on urls, there are some cases like https://// and zzz.com///product/...
 def sitemap_scrape(vendor,sitemapContent):
 
     soup = BeautifulSoup(sitemapContent, "html.parser")
@@ -38,46 +37,44 @@ def sitemap_scrape(vendor,sitemapContent):
 
 
 
-def product_search(product,sitemapList):
+def product_search(product,sitemapList,excludedProductNames):
     
     productFound = []
     productWords_Arr = []
     if("-" in product):
         productWords_Arr = product.split("-")
-    print("XXXXXXXXXXX")
-    print(productWords_Arr)
 
     if sitemapList:
         
         for link in sitemapList:
-            
-            if (len(productWords_Arr) > 0 ):
-                count = 0
-                for word in productWords_Arr:
-                    if word in link:
-                        count += 1
-                if count != len(productWords_Arr): pass#print("False")
-                else: productFound.append(link)
-                  
-            elif (product in link) and (link not in productFound):
-                productFound.append(link)
+            if (any(wordEx in link for wordEx in excludedProductNames) == False):
+                if (len(productWords_Arr) > 0 ):
+                    count = 0
+                    for word in productWords_Arr:
+                        if word in link:
+                            count += 1
+                    if count != len(productWords_Arr): pass#print("False")
+                    else: productFound.append(link)
+                    
+                elif (product in link) and (link not in productFound):
+                    productFound.append(link)
+            else: pass # Excluded Word fount
 
         if len(productFound) == 0:
                 
                 #convert special letters like ğ-ö to g-o
-                special_char_map = {ord('ä'):'a', ord('ü'):'u', ord('ö'):'o', ord('ş'):'s', ord('ç'):'c',ord('ğ'):'g'}
                 temp = product
-                product = product.translate(special_char_map)
+                product = product.translate(scrape_elements.special_char_map)
                 print(" <<< Reconstructed the product string as = "+ product +" >>>")
                 if temp == product:
                     print(" <<< Reconstructed the product string previous one was same :( >>>")
                     return productFound
-                productFound = product_search(product,sitemapList)
+                productFound = product_search(product,sitemapList,excludedProductNames)
     return productFound
 
 
 
-def product_search_xml(product,sitemap_XML):
+def product_search_xml(product,sitemap_XML,excludedProductNames):
     """
     Searches corresponding product in the given XML content.\n
     It simply checks if XML object.text has product name as substring.\n
@@ -90,29 +87,32 @@ def product_search_xml(product,sitemap_XML):
     if("-" in product):
         productWords_Arr = product.split("-")
 
-
+    print(excludedProductNames)
     if sitemap_XML:
  
         xmlstr = minidom.parseString(sitemap_XML).toprettyxml(indent="    ",newl="\n", encoding="UTF-8")
         root = XML_operations.fromstring(xmlstr)
         print("searching "+product+ " in sitemap XML ")
-        #print(root.findall("*"))
 
         try:
 
             for child in root.iter():
                 if(child.text != None):
                     text = unquote(child.text, errors='strict')
-                    #print(child.tag, child.attrib)
-                    if (len(productWords_Arr) > 0 ):
-                        count = 0
-                        for word in productWords_Arr:
-                            if word in text:
-                                count += 1
-                        if count != len(productWords_Arr): pass#print("False")
-                        else: productFound.append(text)     
-                    elif product in text:
-                        productFound.append(text)
+                    
+                    if (any(wordEx in text for wordEx in excludedProductNames) == False):
+                        #print("for text "+text+" looks ex : "+str(any(wordEx in text for wordEx in productWords_Arr)))
+                        if (len(productWords_Arr) > 0 ):
+                            count = 0
+                            for word in productWords_Arr:
+                                if word in text:
+                                    count += 1
+                            if count != len(productWords_Arr): pass#print("False")
+                            else: productFound.append(text)     
+                        elif product in text:
+                            productFound.append(text)
+
+                    else:pass# Excluded Word found
                 else:
                     #print("Defect xml node found!")
                     pass
@@ -122,15 +122,15 @@ def product_search_xml(product,sitemap_XML):
             
         #There might be special chracters for user's query. For example, süpürge --> supurge
         if len(productFound) == 0:
+            
             #convert special letters like ğ-ö to g-o
-            special_char_map = {ord('ä'):'a', ord('ü'):'u', ord('ö'):'o', ord('ş'):'s', ord('ç'):'c',ord('ğ'):'g'}
             temp = product
-            product = product.translate(special_char_map)
+            product = product.translate(scrape_elements.special_char_map)
             print(" <<< Reconstructed the product string as = "+ product +" >>>")
             if temp == product:
                 print(" <<< Reconstructed the product string but found none again :( >>>")
                 return productFound
-            productFound = product_search_xml(product,sitemap_XML)
+            productFound = product_search_xml(product,sitemap_XML,excludedProductNames)
 
     return productFound
 

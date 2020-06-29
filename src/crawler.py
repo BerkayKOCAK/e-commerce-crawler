@@ -4,12 +4,12 @@ import asyncio
 
 
 
-async def init_crawler(productList,vendorList):
+async def init_crawler(productList,vendorList,excludedProductNames):
 
     #TODO - string resulution for excluded product names
 
     print("VENDOR QUEUE STARTS")
-    await vendor_queue(productList,vendorList)
+    await vendor_queue(productList,vendorList,excludedProductNames)
 
 
 #For each vendor task (asynch) [vendor_queue]
@@ -17,7 +17,7 @@ async def init_crawler(productList,vendorList):
         #   Parallel product tasks must find desired product in vendors sitemap and retrieve page links for that product (asynch)
         #   then on each page connection use GET method to retrieve content and then write that content to a file (synch)
 
-async def vendor_queue(productList,vendorList):
+async def vendor_queue(productList,vendorList,excludedProductNames):
     """
     Queues vendor jobs as unique tasks at vendorList.
     \nFor each vendor in vendor list; \n\t call product_queue as task
@@ -39,14 +39,14 @@ async def vendor_queue(productList,vendorList):
                 sitemapContent = await request_lib.GET_request_async(vendor,sitemap)
                 sitemapList = page_work.sitemap_scrape(vendor,sitemapContent)
                 print("Task Created For Vendor : "+vendor+ " with non-XML sitemap")
-                vendorTasks.append(asyncio.ensure_future(product_queue(productList,vendor,sitemapList,False)))
+                vendorTasks.append(asyncio.ensure_future(product_queue(productList,vendor,sitemapList,False,excludedProductNames)))
 
             else:
                 print("sitemapCategory address: "+sitemapCategory)
                 #TODO - make it a stream call. Regular get might stuck for large xmls
                 sitemap_XML = request_lib.GET_request(sitemapCategory)
                 print("Task Created For Vendor : "+vendor+" with regular sitemap")
-                vendorTasks.append(asyncio.ensure_future(product_queue(productList,vendor,sitemap_XML,True)))
+                vendorTasks.append(asyncio.ensure_future(product_queue(productList,vendor,sitemap_XML,True,excludedProductNames)))
 
         while vendorTasks:
             print(" **** Vendor Tasks are started **** ")
@@ -58,7 +58,7 @@ async def vendor_queue(productList,vendorList):
 
 
 
-async def product_queue(productList,vendor,sitemapHolder,isXml):
+async def product_queue(productList,vendor,sitemapHolder,isXml,excludedProductNames):
     """
     Queues each product in productList as tasks.
     \nFor each product in productList;\n\t call page_queue to work on pages of the product\n
@@ -73,8 +73,8 @@ async def product_queue(productList,vendor,sitemapHolder,isXml):
         for product in productList:
             print("Task Created For Product : "+product)
             
-            if isXml: pageList = page_work.product_search_xml(product,sitemapHolder)
-            else: pageList = page_work.product_search(product,sitemapHolder)
+            if isXml: pageList = page_work.product_search_xml(product,sitemapHolder,excludedProductNames)
+            else: pageList = page_work.product_search(product,sitemapHolder,excludedProductNames)
             
             print("Product :"+ product +" pageList : "+str(pageList))
             if pageList: productTasks.append(asyncio.ensure_future(page_queue(vendor,product,pageList)))

@@ -285,6 +285,7 @@ FOR PRODUCTS :
 """
 products = {}
 
+special_char_map = {ord('ä'):'a', ord('ü'):'u', ord('ö'):'o', ord('ş'):'s', ord('ç'):'c',ord('ğ'):'g'}
 """
 examples:
 
