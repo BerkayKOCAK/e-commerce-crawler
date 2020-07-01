@@ -127,7 +127,7 @@ def product_folder_mapping(vendors):
                             scrape_elements.products.get(vendor)['products'][category].append(file_path)
                         except KeyError:
                             scrape_elements.products.get(vendor)['products'][category] = [file_path]
-    
+        
 
 
 def menu_add_products(product_selection):
@@ -145,12 +145,11 @@ def menu_add_products(product_selection):
     new_product_selection = product_selection
     flag = 0
     for vendor in scrape_elements.products.keys():
-        
         for product in scrape_elements.products.get(vendor)['products'].keys():
             flag = 0
             temp = {"name":product}#,"disabled":"cause"}
             #print("choices : "+str(new_product_selection[0].get("choices")))
-            
+
             for index in new_product_selection[0].get("choices"):
               
                 #print("index: "+str(index))

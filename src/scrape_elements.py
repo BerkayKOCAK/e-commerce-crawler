@@ -86,7 +86,7 @@ websites = {
             'sitemap' : "https://www.n11.com/site-haritasi",
             'sitemap-category' : "",
             'non-xml-map' : True,
-            'redirect-allowed': True
+            'redirect-allowed': False
         },
     "teknosa" : 
         {
@@ -158,7 +158,7 @@ websites = {
             'sitemap' : "https://www.trendyol.com/sitemap",
             'sitemap-category' : "https://www.trendyol.com/sitemap_categories.xml",
             'non-xml-map' : False,
-            'redirect-allowed': True
+            'redirect-allowed': False
         },
      "istanbulbilisim" : 
         {#this website has serious scripting issues, check when you are free !
@@ -285,7 +285,7 @@ FOR PRODUCTS :
 """
 products = {}
 
-special_char_map = {ord('ä'):'a', ord('ü'):'u', ord('ö'):'o', ord('ş'):'s', ord('ç'):'c',ord('ğ'):'g'}
+special_char_map = {ord('ä'):'a', ord('ü'):'u', ord('ö'):'o', ord('ş'):'s', ord('ç'):'c',ord('ğ'):'g',ord('ı'):'i',ord('İ'):'I'}
 """
 examples:
 

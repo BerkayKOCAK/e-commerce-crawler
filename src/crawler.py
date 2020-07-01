@@ -44,17 +44,20 @@ async def vendor_queue(productList,vendorList,excludedProductNames):
             else:
                 print("sitemapCategory address: "+sitemapCategory)
                 #TODO - make it a stream call. Regular get might stuck for large xmls
-                sitemap_XML = request_lib.GET_request(sitemapCategory)
+                sitemap_XML = await request_lib.GET_request_async(vendor,sitemapCategory)
                 print("Task Created For Vendor : "+vendor+" with regular sitemap")
                 vendorTasks.append(asyncio.ensure_future(product_queue(productList,vendor,sitemap_XML,True,excludedProductNames)))
 
         while vendorTasks:
             print(" **** Vendor Tasks are started **** ")
             done, pending = await asyncio.wait(vendorTasks)
+            print("\nTASK : "+ str(done)+" ENDED \n")
             vendorTasks[:] = pending
         print("**** Vendor Tasks are ended **** ")
+        return 0
     except Exception as e:
         print(" @@@@ ERROR IN VENDOR QUEUE  @@@@ \n MESSAGE : "+ str(e))
+        return 1
 
 
 
@@ -86,8 +89,10 @@ async def product_queue(productList,vendor,sitemapHolder,isXml,excludedProductNa
             done, pending = await asyncio.wait(productTasks)
             productTasks[:] = pending
         print("**** Product Tasks are ended for "+vendor+" **** ")
+        return 0
     except Exception as e:
         print(" @@@@ ERROR IN PRODUCT QUEUE  @@@@ \n MESSAGE : "+ str(e))
+        return 1
 
 
 
@@ -115,9 +120,10 @@ async def page_queue(vendor,product,pageList):
             done, pending = await asyncio.wait(subPageTasks)
             subPageTasks[:] = pending
         print("**** Paging Task is ended for product : "+product+" **** ")
-            
+        return 0    
     except Exception as e:
         print(" === ERROR IN PAGE QUEUE  === \n MESSAGE : "+ str(e))
+        return 1
 
 
 
@@ -144,3 +150,4 @@ async def sub_page_worker(vendor,product,page,productFolder):
             print("HTML PAGE WRITTEN : "+ subPageName)
         pageCount = pageCount + 1
     print("**** SUB-PAGE Task is ended for : "+page+" **** ")
+    return 0

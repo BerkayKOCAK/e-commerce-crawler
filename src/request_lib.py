@@ -2,6 +2,7 @@
 import requests #it is a blocking library by nature !
 import asyncio
 import urllib
+import functools
 from src import scrape_elements
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -39,6 +40,7 @@ def GET_request (url):
 
         response = session.get(url,allow_redirects=True)
         contentToReturn = response.content
+        session.close()
         return contentToReturn
 
     except Exception as e:
@@ -57,6 +59,7 @@ async def GET_request_async (vendor,url):
     website = scrape_elements.websites[vendor]
     session = requests.Session()
     session.headers = headers
+
     retry = Retry(connect=1, backoff_factor=0.5)
     adapter = HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
@@ -64,10 +67,12 @@ async def GET_request_async (vendor,url):
     loop = asyncio.get_event_loop()
 
     try:
-        
-        future = loop.run_in_executor(None, session.get, url)
+       
+        future = loop.run_in_executor(None, functools.partial( session.get, url,timeout=10))
+        #response = await asyncio.wait_for(future, timeout=10)
         response = await future
         redirected = response.url != url
+        
         #It looks redirecting because sometimes while trying to find last sub page of a product,
         #website simply redirects from none existing sub page query to main page.
         
@@ -76,10 +81,15 @@ async def GET_request_async (vendor,url):
             if redirected: return None
             else: pass
                 
-
+    except requests.exceptions.Timeout as err: 
+        print(" @@@@ ERROR IN ASYNCH REQUEST -- TIMEOUT @@@@ \n MESSAGE : "+ str(err))
+        session.close()
+        return None
     except Exception as e:
         print(" @@@@ ERROR IN ASYNCH REQUEST @@@@ \n MESSAGE : "+ str(e))
+        session.close()
         return None
+    session.close()
     return  response.content 
 
 #TODO - stream

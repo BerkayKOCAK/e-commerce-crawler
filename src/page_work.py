@@ -87,7 +87,7 @@ def product_search_xml(product,sitemap_XML,excludedProductNames):
     if("-" in product):
         productWords_Arr = product.split("-")
 
-    print(excludedProductNames)
+
     if sitemap_XML:
  
         xmlstr = minidom.parseString(sitemap_XML).toprettyxml(indent="    ",newl="\n", encoding="UTF-8")
@@ -113,12 +113,12 @@ def product_search_xml(product,sitemap_XML,excludedProductNames):
                             productFound.append(text)
 
                     else:pass# Excluded Word found
-                else:
+                else:pass
                     #print("Defect xml node found!")
-                    pass
+                    
                     
         except Exception as e:
-            print("ERROR "+str(e))
+            print("ERROR ! PRODUCT SEARCH IN XML \nMESSAGE : "+str(e))
             
         #There might be special chracters for user's query. For example, süpürge --> supurge
         if len(productFound) == 0:
@@ -211,26 +211,30 @@ async def page_has_scrape(vendor,page_URL):
     vendor = Vendor name\n
     page_URL = URL of the page to check\n
     """
-    content = await request_lib.GET_request_async(vendor,page_URL)
+    try:
+        content = await request_lib.GET_request_async(vendor,page_URL)
 
-    if(content != None):
-        soup = BeautifulSoup(content, "html.parser")
-        website = scrape_elements.websites[vendor]
+        if(content != None):
+            soup = BeautifulSoup(content, "html.parser")
+            website = scrape_elements.websites[vendor]
 
-        if website["product-scope"]["name"]:
-            regex_class_name = re.compile(website["product-scope"]["name"])
+            if website["product-scope"]["name"]:
+                regex_class_name = re.compile(website["product-scope"]["name"])
+            else:
+                regex_class_name = ''
+            
+            productElements = soup.find_all(website["product-scope"]["element"], class_= regex_class_name )
+            
+            if (productElements):
+                #print(" 000> Page  is scrapable.")
+                return True
+            else:
+                #print(" +++> Page  is not scrapable because there is no product scope in its dom elements.")
+                #print("Product scope can be find at corresponding vendor's scrape_elements.py mapping. ")
+                return False
         else:
-            regex_class_name = ''
-        
-        productElements = soup.find_all(website["product-scope"]["element"], class_= regex_class_name )
-        
-        if (productElements):
-            #print(" 000> Page  is scrapable.")
-            return True
-        else:
-            #print(" +++> Page  is not scrapable because there is no product scope in its dom elements.")
-            #print("Product scope can be find at corresponding vendor's scrape_elements.py mapping. ")
+            #print(" +++> Page  is not scrapable because there is no content !")
             return False
-    else:
-        #print(" +++> Page  is not scrapable because there is no content !")
+    except Exception as e:
+        print("\n0000 ERROR IN page_has_scrape 000 \nMESSAGE : "+ str(e))
         return False

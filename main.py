@@ -142,9 +142,7 @@ templateProductExclude = [
     {
         'type': 'input',
         'message': "Enter words to exclude. Put comma between multiple words\n* Words you enter must be case and special character sensitive!",
-        'name': 'excludedProducts',
-        'validate': lambda answer: 'You must choose at least one topping.' \
-            if len(answer) == 0 else True
+        'name': 'excludedProducts'
     },
 ]
 
@@ -158,6 +156,8 @@ def main():
     utils.instructions()
     cw_vendorSelection = utils.menu_add_vendors(templateCwSelection)
     sc_vendorSelection = utils.menu_add_vendors(templateScSelection)
+    sc_vendors = []
+    sc_productSelection = []
     
     try:
         
@@ -167,10 +167,11 @@ def main():
             sc_list = prompt(templateScList, style=style1)
             cw_vendors = prompt(cw_vendorSelection, style=style1)
             if(len(cw_vendors['cw_vendors']) != 0):
-
+                
                 tempVendors = cw_vendors['cw_vendors']
                 templateSameVendorQuestion['message'] = templateSameVendorQuestion['message'] + " --> "+str(tempVendors)
-                if ("Both" or  "Current Assets") in sc_list['operationList']:
+                
+                if(("Both") or ("Current Assets") in sc_list['operationList']):
                     sameVendors = prompt(templateSameVendorQuestion, style = style1)
                     if (sameVendors['sameVendors']):
                         sc_vendors = cw_vendors['cw_vendors']
@@ -183,7 +184,7 @@ def main():
                 
                
 
-            elif(not useScraper["scrapingOpt"]): pass
+            elif (not useScraper["scrapingOpt"]): pass
             else: exit(0)
 
         else: pass
@@ -231,8 +232,8 @@ def main():
                    
                     cw_excludedProducts = prompt(templateProductExclude, style=style1)
                     cw_excludedArr = str(cw_excludedProducts).split(",")
-
                     print(cw_productsArr)
+
                     sc_productSelection = utils.menu_add_products(templateProductSelection)
                     sc_selectedProducts = prompt(sc_productSelection, style=style2)
                     
@@ -242,7 +243,7 @@ def main():
                     
                     print(colored(' -- Crawler Starts -- ', 'cyan'))
                     asyncio.run(utils.timeout(1))
-                    asyncio.run(crawler.init_crawler (cw_productsArr,cw_vendors['cw_vendors'],cw_excludedArr) )
+                    asyncio.run(crawler.init_crawler(cw_productsArr,cw_vendors['cw_vendors'],cw_excludedArr))
                   
                     utils.vendor_folder_mapping()
                     utils.product_folder_mapping(sc_vendors)
@@ -250,11 +251,13 @@ def main():
                     print(colored(' -- Scraper works for new assets -- ', 'cyan'))
                     sc_productSelection = utils.menu_add_products(templateProductSelection)
                     sc_selectedProducts = prompt(sc_productSelection, style=style2)
+                    asyncio.run(utils.timeout(1))
                     asyncio.run(scraper.scraper_init (cw_vendors['cw_vendors'],sc_selectedProducts['sc_selectedProducts']) )
 
             elif "Current Assets" in sc_list['operationList']:
                     
                     print(colored('Only scraper will operate', 'red'))
+
                     utils.vendor_folder_mapping()
                     utils.product_folder_mapping(sc_vendors)
 
@@ -264,10 +267,23 @@ def main():
                     asyncio.run(scraper.scraper_init(sc_vendors,sc_selectedProducts['sc_selectedProducts']))
 
             else:
-                 print(colored('Scraper will work only for incoming new assets after crawling ends.', 'red'))
-                 asyncio.run(crawler.init_crawler(cw_selectedProducts['products'],cw_vendors['cw_vendors'],cw_excludedArr))
-                 #can also ask in here to filter scraping among new vendors.
-                 asyncio.run(scraper.scraper_init(sc_vendors,cw_vendors['cw_vendors']))
+
+               
+
+                print(colored('Scraper will work only for incoming new assets after crawling ends.', 'red'))
+                cw_selectedProducts = prompt(templateProductInput, style=style3)
+                cw_productsArr = str(cw_selectedProducts["products"]).split(",")
+                   
+                cw_excludedProducts = prompt(templateProductExclude, style=style1)
+                cw_excludedArr = str(cw_excludedProducts).split(",")
+                print(cw_productsArr)
+
+                asyncio.run(crawler.init_crawler(cw_productsArr,cw_vendors['cw_vendors'],cw_excludedArr))
+
+                utils.vendor_folder_mapping()
+                utils.product_folder_mapping(sc_vendors)
+                
+                asyncio.run(scraper.scraper_init(cw_vendors['cw_vendors'],cw_productsArr))
 
         else:
             print(colored('Only crawler will operate', 'red'))
@@ -282,7 +298,6 @@ def main():
 
     except Exception as identifier:
         print("ERROR IN MAIN : "+str(identifier))
-
-    #TODO - ask for words to exclude at search
     
 main()
+exit(0)
