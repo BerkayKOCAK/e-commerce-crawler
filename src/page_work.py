@@ -41,29 +41,35 @@ def product_search(product,sitemapList,excludedProductNames):
     
     productFound = []
     productWords_Arr = []
-    if("-" in product):
-        productWords_Arr = product.split("-")
+    #print(excludedProductNames)
+    if("-" in product): productWords_Arr = product.lower().split("-")   
+    else: productWords_Arr.append(product.lower())
 
     if sitemapList:
         
         for link in sitemapList:
+            
             if (any(wordEx in link for wordEx in excludedProductNames) == False):
+                
                 if (len(productWords_Arr) > 0 ):
+                    
                     count = 0
                     for word in productWords_Arr:
-                        if word in link:
+                        
+                        if word in link.lower():
                             count += 1
                     if count != len(productWords_Arr): pass#print("False")
                     else: productFound.append(link)
                     
                 elif (product in link) and (link not in productFound):
                     productFound.append(link)
-            else: pass # Excluded Word fount
+            else: continue# Excluded Word fount
 
         if len(productFound) == 0:
                 
                 #convert special letters like ğ-ö to g-o
                 temp = product
+                product = product.lower()
                 product = product.translate(scrape_elements.special_char_map)
                 print(" <<< Reconstructed the product string as = "+ product +" >>>")
                 if temp == product:
@@ -112,8 +118,8 @@ def product_search_xml(product,sitemap_XML,excludedProductNames):
                         elif product in text:
                             productFound.append(text)
 
-                    else:pass# Excluded Word found
-                else:pass
+                    else:continue# Excluded Word found
+                else:continue
                     #print("Defect xml node found!")
                     
                     

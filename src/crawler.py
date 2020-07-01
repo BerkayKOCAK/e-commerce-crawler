@@ -2,11 +2,9 @@ from src import request_lib, scrape_elements, utils, page_work
 import os
 import asyncio
 
-
+#TODO - improve try-catch usage!
 
 async def init_crawler(productList,vendorList,excludedProductNames):
-
-    #TODO - string resulution for excluded product names
 
     print("VENDOR QUEUE STARTS")
     await vendor_queue(productList,vendorList,excludedProductNames)
@@ -56,7 +54,7 @@ async def vendor_queue(productList,vendorList,excludedProductNames):
         print("**** Vendor Tasks are ended **** ")
         return 0
     except Exception as e:
-        print(" @@@@ ERROR IN VENDOR QUEUE  @@@@ \n MESSAGE : "+ str(e))
+        print(" === ERROR IN VENDOR QUEUE  === \n MESSAGE : "+ str(e))
         return 1
 
 
@@ -91,7 +89,7 @@ async def product_queue(productList,vendor,sitemapHolder,isXml,excludedProductNa
         print("**** Product Tasks are ended for "+vendor+" **** ")
         return 0
     except Exception as e:
-        print(" @@@@ ERROR IN PRODUCT QUEUE  @@@@ \n MESSAGE : "+ str(e))
+        print(" === ERROR IN PRODUCT QUEUE  === \n MESSAGE : "+ str(e))
         return 1
 
 
@@ -138,16 +136,20 @@ async def sub_page_worker(vendor,product,page,productFolder):
     print("SUB-PAGE Task for product : "+product+" - sub page queue, page : "+page)
     
     pageCount = 0
-    lastPageNum = await page_work.find_last_page(vendor,page)
-    
-    print("Number of pages for "+ page +" is "+str(lastPageNum))
-    while pageCount <= lastPageNum:
-        subPage = page_work.sub_page_URL_generator(vendor,page,pageCount)
-        subPageName = utils.url_name_strip(subPage) + "-" + str(pageCount)
-        content = await request_lib.GET_request_async(vendor,subPage)
-        if content is not None:
-            utils.html_writer(productFolder,subPageName,content)
-            print("HTML PAGE WRITTEN : "+ subPageName)
-        pageCount = pageCount + 1
-    print("**** SUB-PAGE Task is ended for : "+page+" **** ")
+    try:
+        
+        lastPageNum = await page_work.find_last_page(vendor,page)
+        print("Number of pages for "+ page +" is "+str(lastPageNum))
+        while pageCount <= lastPageNum:
+            subPage = page_work.sub_page_URL_generator(vendor,page,pageCount)
+            subPageName = utils.url_name_strip(subPage) + "-" + str(pageCount)
+            content = await request_lib.GET_request_async(vendor,subPage)
+            if content is not None:
+                utils.html_writer(productFolder,subPageName,content)
+                print("HTML PAGE WRITTEN : "+ subPageName)
+            pageCount = pageCount + 1
+        print("**** SUB-PAGE Task is ended for : "+page+" **** ")
+    except Exception as e:
+        print(" === ERROR IN SUB-PAGE WORKER  === \n MESSAGE : "+ str(e))
+        return 1
     return 0

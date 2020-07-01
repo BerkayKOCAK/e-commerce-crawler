@@ -160,30 +160,6 @@ websites = {
             'non-xml-map' : False,
             'redirect-allowed': False
         },
-     "istanbulbilisim" : 
-        {#this website has serious scripting issues, check when you are free !
-            "name": "istanbulbilisim",
-            'product-scope' : 
-            
-                {
-                    'element': 'div',
-                    'name': 'col-xs-6 col-sm-6 col-md-4'
-                },        
-            'child-element' : 
-                {
-                    'title': 'p',
-                    'title_regex' : '.*title.*', 
-                    'price': 'p',
-                    'price_regex' : '.*price-act.*',
-                    'old_price': 'p' 
-                },
-            'page-query' : "p",
-            'url' : "https://www.istanbulbilisim.com/",
-            'sitemap' : "https://www.istanbulbilisim.com/sitemap.xml",
-            'sitemap-category' : "https://www.istanbulbilisim.com/tum-kategoriler.html",
-            'non-xml-map' : True,
-            'redirect-allowed': True
-        },
     "amazon.tr" : 
         {
             "name": "amazon.tr",
@@ -286,6 +262,8 @@ FOR PRODUCTS :
 products = {}
 
 special_char_map = {ord('ä'):'a', ord('ü'):'u', ord('ö'):'o', ord('ş'):'s', ord('ç'):'c',ord('ğ'):'g',ord('ı'):'i',ord('İ'):'I'}
+
+
 """
 examples:
 
@@ -298,4 +276,32 @@ print(str(products.get("Hepsiburada")))
 for target_list in products.keys():
    print(str(target_list))
 
+"""
+
+"""
+    #This vendor's web site has faulty page search query
+     "istanbulbilisim" : 
+        {#this website has serious scripting issues, check when you are free !
+            "name": "istanbulbilisim",
+            'product-scope' : 
+            
+                {
+                    'element': 'div',
+                    'name': 'col-xs-6 col-sm-6 col-md-4'
+                },        
+            'child-element' : 
+                {
+                    'title': 'p',
+                    'title_regex' : '.*title.*', 
+                    'price': 'p',
+                    'price_regex' : '.*price-act.*',
+                    'old_price': 'p' 
+                },
+            'page-query' : "p",
+            'url' : "https://www.istanbulbilisim.com/",
+            'sitemap' : "https://www.istanbulbilisim.com/tum-kategoriler.html", #"https://www.istanbulbilisim.com/sitemap.xml",
+            'sitemap-category' : "https://www.istanbulbilisim.com/tum-kategoriler.html",
+            'non-xml-map' : True,
+            'redirect-allowed': False
+        },
 """

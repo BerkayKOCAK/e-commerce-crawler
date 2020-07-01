@@ -183,7 +183,7 @@ def product_subpage_aligner(file_list):
             if (file_name.find("_") < 0 ):
                 regex_array.append(file_name)
             else:
-                pass
+                continue
 
     return regex_array
 

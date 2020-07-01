@@ -22,7 +22,7 @@ To install packages in requirements.txt run ;
 Crawler can operate with scraper, you need to add it to src/ folder as scraper.py .
 If you are using my scraper you also need to put csv_lib.py under src/ .
 Operetable vendors are registered under src/scrape_elements.py, if you need to add new vendor just provide every object members like default vendors.
-**Default vendors :** hepsiburada, vatan, gittigidiyor, n11, teknosa, mediamarkt, trendyol, istanbulbilişim, amazon.tr 
+**Default vendors :** hepsiburada, vatan, gittigidiyor, n11, teknosa, mediamarkt, trendyol, amazon.tr 
 
 To run the program use;
 
