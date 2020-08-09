@@ -18,15 +18,6 @@ Additional libraries:
 import asyncio
 import logging
 from src import crawler, utils, scraper
-from pprint import pprint
-
-from PyInquirer import style_from_dict, Token, prompt, Separator
-from pyfiglet import Figlet
-from termcolor import colored
-
-#Scraper = sc
-#Crawler = cw
-
 
 def main():
  
