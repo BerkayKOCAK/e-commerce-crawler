@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import re
+import logging
 import xml.etree.ElementTree as XML_operations
 from src import scrape_elements, request_lib
 from urllib.parse import unquote
@@ -41,7 +42,7 @@ def product_search(product,sitemapList,excludedProductNames):
     
     productFound = []
     productWords_Arr = []
-    #print(excludedProductNames)
+    #logging.info(excludedProductNames)
     if("-" in product): productWords_Arr = product.lower().split("-")   
     else: productWords_Arr.append(product.lower())
 
@@ -58,7 +59,7 @@ def product_search(product,sitemapList,excludedProductNames):
                         
                         if word in link.lower():
                             count += 1
-                    if count != len(productWords_Arr): pass#print("False")
+                    if count != len(productWords_Arr): pass#logging.info("False")
                     else: productFound.append(link)
                     
                 elif (product in link) and (link not in productFound):
@@ -71,9 +72,9 @@ def product_search(product,sitemapList,excludedProductNames):
                 temp = product
                 product = product.lower()
                 product = product.translate(scrape_elements.special_char_map)
-                print(" <<< Reconstructed the product string as = "+ product +" >>>")
+                logging.warning(" <<< Reconstructed the product string as = "+ product +" >>>")
                 if temp == product:
-                    print(" <<< Reconstructed the product string previous one was same :( >>>")
+                    logging.error(" <<< Reconstructed the product string previous one was same :( >>>")
                     return productFound
                 productFound = product_search(product,sitemapList,excludedProductNames)
     return productFound
@@ -98,7 +99,7 @@ def product_search_xml(product,sitemap_XML,excludedProductNames):
  
         xmlstr = minidom.parseString(sitemap_XML).toprettyxml(indent="    ",newl="\n", encoding="UTF-8")
         root = XML_operations.fromstring(xmlstr)
-        print("searching "+product+ " in sitemap XML ")
+        logging.info("Searching "+product+ " in sitemap XML ")
 
         try:
 
@@ -107,24 +108,24 @@ def product_search_xml(product,sitemap_XML,excludedProductNames):
                     text = unquote(child.text, errors='strict')
                     
                     if (any(wordEx in text for wordEx in excludedProductNames) == False):
-                        #print("for text "+text+" looks ex : "+str(any(wordEx in text for wordEx in productWords_Arr)))
+                        #logging.info("for text "+text+" looks ex : "+str(any(wordEx in text for wordEx in productWords_Arr)))
                         if (len(productWords_Arr) > 0 ):
                             count = 0
                             for word in productWords_Arr:
                                 if word in text:
                                     count += 1
-                            if count != len(productWords_Arr): pass#print("False")
+                            if count != len(productWords_Arr): pass#logging.info("False")
                             else: productFound.append(text)     
                         elif product in text:
                             productFound.append(text)
 
                     else:continue# Excluded Word found
                 else:continue
-                    #print("Defect xml node found!")
+                    #logging.info("Defect xml node found!")
                     
                     
         except Exception as e:
-            print("ERROR ! PRODUCT SEARCH IN XML \nMESSAGE : "+str(e))
+            logging.error("ERROR ! PRODUCT SEARCH IN XML \nMESSAGE : "+str(e))
             
         #There might be special chracters for user's query. For example, süpürge --> supurge
         if len(productFound) == 0:
@@ -132,9 +133,9 @@ def product_search_xml(product,sitemap_XML,excludedProductNames):
             #convert special letters like ğ-ö to g-o
             temp = product
             product = product.translate(scrape_elements.special_char_map)
-            print(" <<< Reconstructed the product string as = "+ product +" >>>")
+            logging.warning(" <<< Reconstructed the product string as = "+ product +" >>>")
             if temp == product:
-                print(" <<< Reconstructed the product string but found none again :( >>>")
+                logging.error(" <<< Reconstructed the product string but found none again :( >>>")
                 return productFound
             productFound = product_search_xml(product,sitemap_XML,excludedProductNames)
 
@@ -232,15 +233,15 @@ async def page_has_scrape(vendor,page_URL):
             productElements = soup.find_all(website["product-scope"]["element"], class_= regex_class_name )
             
             if (productElements):
-                #print(" 000> Page  is scrapable.")
+                #logging.info(" 000> Page  is scrapable.")
                 return True
             else:
-                #print(" +++> Page  is not scrapable because there is no product scope in its dom elements.")
-                #print("Product scope can be find at corresponding vendor's scrape_elements.py mapping. ")
+                #logging.info(" +++> Page  is not scrapable because there is no product scope in its dom elements.")
+                #logging.info("Product scope can be find at corresponding vendor's scrape_elements.py mapping. ")
                 return False
         else:
-            #print(" +++> Page  is not scrapable because there is no content !")
+            #logging.info(" +++> Page  is not scrapable because there is no content !")
             return False
     except Exception as e:
-        print("\n0000 ERROR IN page_has_scrape 000 \nMESSAGE : "+ str(e))
+        logging.critical("ERROR IN page_has_scrape , MESSAGE : "+ str(e))
         return False

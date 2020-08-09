@@ -7,7 +7,7 @@ from src import scrape_elements
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from urllib3.exceptions import NewConnectionError
-
+import logging
 
 
 PROXIES = {
@@ -47,7 +47,7 @@ def GET_request (url):
         return contentToReturn
 
     except Exception as e:
-        print(" @@@@ ERROR IN SIMPLE GET @@@@ : "+ str(e))  
+        logging.info(" @@@@ ERROR IN SIMPLE GET @@@@ : "+ str(e))  
 """
 
 #WARNING - when connection lost, it needs to retry.ATM it just throws exception.
@@ -87,11 +87,11 @@ async def GET_request_async (vendor,url):
             else: pass
                 
     except requests.exceptions.Timeout as err: 
-        print(" @@@@ ERROR IN ASYNCH REQUEST -- TIMEOUT @@@@ \n MESSAGE : "+ str(err))
+        logging.error(" @@@@ ERROR IN ASYNCH REQUEST -- TIMEOUT @@@@ \n MESSAGE : "+ str(err))
         session.close()
         return None
     except Exception as e:
-        print(" @@@@ ERROR IN ASYNCH REQUEST @@@@ \n MESSAGE : "+ str(e))
+        logging.error(" @@@@ ERROR IN ASYNCH REQUEST @@@@ \n MESSAGE : "+ str(e))
         session.close()
         return None
     session.close()
@@ -99,7 +99,7 @@ async def GET_request_async (vendor,url):
 
 #TODO - stream
 def GET_request_stream (url):
-    print("! UNDER CONSTRUCT !")
+    logging.info("! UNDER CONSTRUCT !")
     """
     response = requests.get(url, stream=True)
     # if the server sent a Gzip or Deflate compressed response, decompress

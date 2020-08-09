@@ -3,6 +3,7 @@
 """
 import csv
 import os
+import logging
 
 
 
@@ -32,10 +33,10 @@ def write_csv(vendor,product,scrape_array):
 def read_csv (vendor,product):
     """ Reades from ../output/'vendor'/'product-vendor.csv' """
     if not os.path.exists('output'):
-        print("Output Folder Not Found! Scrape something first !!")
+        logging.info("Output Folder Not Found! Scrape something first !!")
         return
     if not os.path.exists('output/'+vendor):
-        print("Vendor Folder In Output Not Found! Scrape something first !!")
+        logging.info("Vendor Folder In Output Not Found! Scrape something first !!")
         return
 
     with open('../output/'+vendor+'/'+vendor+'-'+product+'.csv') as csv_file:
@@ -43,9 +44,9 @@ def read_csv (vendor,product):
         line_count = 0
         for row in csv_reader:
             if line_count == 0:
-                print(f'Column names are: {", ".join(row)}')
+                logging.info(f'Column names are: {", ".join(row)}')
                 line_count += 1
             else:
-                print(f'\t{row} : ROW AS ARRAY\n')
+                logging.info(f'\t{row} : ROW AS ARRAY\n')
                 line_count += 1
-        print(f'Processed {line_count} lines.')
+        logging.info(f'Processed {line_count} lines.')

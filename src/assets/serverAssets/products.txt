@@ -1,0 +1,4 @@
+bilgisayar
+cep-telefonu
+notebook
+laptop

@@ -1,6 +1,8 @@
 
 import os
 import asyncio
+import shutil
+import logging
 from pathlib import Path
 from src import scrape_elements
 from bs4 import BeautifulSoup
@@ -26,9 +28,31 @@ def file_integrity():
 
     if os.path.exists(absolutePath+"\\scraper.py") and os.path.exists(absolutePath+"\\csv_lib.py"): pass
     else: 
-        print("Scraper folder not found!\ncsv_lib.py not found!\nYou can not scrape the downloaded web pages without a scraper.\nPlease download it from = https://github.com/BerkayKOCAK/scraper-bot")
+        logging.info("Scraper folder not found!\ncsv_lib.py not found!\nYou can not scrape the downloaded web pages without a scraper.\nPlease download it from = https://github.com/BerkayKOCAK/scraper-bot")
         return False
     return True
+
+def readFileToArray(fileName):
+    arrayToReturn = []
+
+    filePath = str(Path(__file__).parent.absolute())+"\\assets\\serverAssets\\"+fileName
+    with open(filePath,encoding='utf-8') as fp: 
+        lines = fp.readlines() 
+        for line in lines: 
+            arrayToReturn.append(line.strip())
+    return arrayToReturn
+
+
+     
+def cleanUp(vendors):
+    """Deletes vendor folders in /assets  """
+    folderPath = str(Path(__file__).parent.absolute())+"\\assets\\"
+    for vendor in vendors:
+       shutil.rmtree(folderPath+vendor,False)
+
+#def raiseEx(): raise Exception("error in cleanUp !")
+
+
 
 async def timeout(time):
     """Simple timeout, takes time as seconds"""
@@ -55,7 +79,7 @@ def instructions():
 
 def vendor_folder_mapping():
     """
-    For scraper, checks every vendor's folder, then registers abendor as key and \"products\":{} object in the scarep_elements.pt file.\n
+    For scraper, checks every vendor's folder, then registers a vendor as key and \"products\":{} object in the scarep_elements.pt file.\n
     In the end it will be mapped to the dictionary(map) as key( vendor ) : value( products:{ } )
     """
     folder_list = os.listdir(str(Path(__file__).parent.absolute())+"\\assets\\")
@@ -119,7 +143,7 @@ def product_folder_mapping(vendors):
                 productFiles = os.listdir(str(vendor_path + "\\" + category))
                 for file_holder in productFiles:
                     if (file_holder.find(".html") < 0):
-                        print("file  "+file_holder+" cannot be scraped because it is not a html file !")
+                        logging.info("File  "+file_holder+" cannot be scraped because it is not a html file !")
                     else:
                         #file_name = str(os.path.splitext(file_holder)[0])
                         file_path = str(vendor_path + "\\" + category +"\\" + str(Path(file_holder)))
@@ -148,11 +172,11 @@ def menu_add_products(product_selection):
         for product in scrape_elements.products.get(vendor)['products'].keys():
             flag = 0
             temp = {"name":product}#,"disabled":"cause"}
-            #print("choices : "+str(new_product_selection[0].get("choices")))
+            #logging.info("choices : "+str(new_product_selection[0].get("choices")))
 
             for index in new_product_selection[0].get("choices"):
               
-                #print("index: "+str(index))
+                #logging.info("index: "+str(index))
                 if hasattr(index, 'get'):
                     if product == index.get("name"): 
                         flag = 1   
@@ -177,7 +201,7 @@ def product_subpage_aligner(file_list):
     regex_array = []
     for file_holder in file_list:
         if (file_holder.find(".html") < 0):
-                print("File "+file_holder+" cannot be added as product, it is not a html file !")
+                logging.ERROR("File "+file_holder+" cannot be added as product, it is not a html file !")
         else:
             file_name = str(os.path.splitext(file_holder)[0])
             if (file_name.find("_") < 0 ):
@@ -205,7 +229,7 @@ def create_vendor_folder(vendor):
         pass
     else:
         os.mkdir(vendorPath)
-        print("created vendor folder for : "+vendor+" as "+  vendorPath)
+        logging.info("Created vendor folder for : "+vendor+" as "+  vendorPath)
 
 
 
@@ -217,7 +241,7 @@ def create_product_folder(vendor,product):
     productPath = str(Path(__file__).parent.absolute())+"\\assets\\"+str(vendor)+"\\"+str(product)
     if os.path.exists(productPath): pass
     else:
-        print("created product folder for : "+product+" as "+  productPath)
+        logging.info("Created product folder for : "+product+" as "+  productPath)
         os.mkdir(productPath)
     return productPath
 
