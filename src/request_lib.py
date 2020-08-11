@@ -87,11 +87,11 @@ async def GET_request_async (vendor,url):
             else: pass
                 
     except requests.exceptions.Timeout as err: 
-        logging.error(" @@@@ ERROR IN ASYNCH REQUEST -- TIMEOUT @@@@ \n MESSAGE : "+ str(err))
+        logging.error(" @@@@ ERROR IN ASYNCH REQUEST -- TIMEOUT @@@@ MESSAGE : "+ str(err))
         session.close()
         return None
     except Exception as e:
-        logging.error(" @@@@ ERROR IN ASYNCH REQUEST @@@@ \n MESSAGE : "+ str(e))
+        logging.error(" @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : "+ str(e))
         session.close()
         return None
     session.close()

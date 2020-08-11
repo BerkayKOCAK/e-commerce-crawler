@@ -3,6 +3,7 @@ import os
 import asyncio
 import shutil
 import logging
+from datetime import datetime
 from pathlib import Path
 from src import scrape_elements
 from bs4 import BeautifulSoup
@@ -26,6 +27,12 @@ def file_integrity():
     if os.path.exists(absolutePath+"\\assets\\"): pass
     else: os.mkdir(absolutePath+"\\assets\\")
 
+    if os.path.exists(absolutePath+"\\assets\\"): pass
+    else: os.mkdir(absolutePath+"\\assets\\")
+
+    if os.path.exists("log_archive"): pass
+    else: os.mkdir("log_archive")
+
     if os.path.exists(absolutePath+"\\scraper.py") and os.path.exists(absolutePath+"\\csv_lib.py"): pass
     else: 
         logging.info("Scraper folder not found!\ncsv_lib.py not found!\nYou can not scrape the downloaded web pages without a scraper.\nPlease download it from = https://github.com/BerkayKOCAK/scraper-bot")
@@ -39,7 +46,8 @@ def readFileToArray(fileName):
     with open(filePath,encoding='utf-8') as fp: 
         lines = fp.readlines() 
         for line in lines: 
-            arrayToReturn.append(line.strip())
+            if ((line != "") or (line != " ")  or (line != "\n")):
+                arrayToReturn.append(line.strip())
     return arrayToReturn
 
 
@@ -48,7 +56,9 @@ def cleanUp(vendors):
     """Deletes vendor folders in /assets  """
     folderPath = str(Path(__file__).parent.absolute())+"\\assets\\"
     for vendor in vendors:
-       shutil.rmtree(folderPath+vendor,False)
+        if os.path.exists(folderPath+vendor):shutil.rmtree(folderPath+vendor,False)
+        else:pass
+       
 
 #def raiseEx(): raise Exception("error in cleanUp !")
 
@@ -59,14 +69,102 @@ async def timeout(time):
     await asyncio.sleep(time)
 
 
-def instructions():
-    print(colored('Welcome To E-Commerce Crawler', 'green'), colored('\nInstructions : ', 'yellow'))
-    print(colored('     * ', 'red'), colored('Crawler can operate with scraper, you need to add it to src/ folder as scraper.py', 'cyan'))
-    print(colored('     * ', 'red'), colored('If you are using my scraper you also need to put csv_lib.py under src/', 'cyan'))
-    print(colored('     * ', 'red'), colored('Operetable vendors are registered under src/scrape_elements.py, if you need to add new vendor just provide every object members like default vendors', 'cyan'))
-    print(colored('This crawler is open source version of my commercial crawler, if you are interested in more professional crawler for e-commerce websites contact me : berkay.kocak@hotmail.com', 'cyan'))
-    print(colored('If you have any issue or found a killer bug please open a github issue on the repository page.', 'cyan'))
-    print(colored('-------------------------------------------------------------------------------------------------------------------------------', 'red'))
+
+def archieveLog ():
+    today = datetime.today()
+    date = today.strftime("%Y-%m-%d")
+    if os.path.exists("loggings.log"):
+       shutil.move("loggings.log","log_archive/loggings-"+date+".log",)
+    else:pass
+        
+   
+
+
+
+
+def logStatistics (vendors,products):
+    """ 
+        Reads loggings.log file and then extracts a number of statistics for;
+        *Time Spent
+        *Number of Errors
+        *Critical Errors
+    
+    """
+    initialTime = ""
+    endTime = ""
+    crawlerInitialTime = ""
+    crawlerEndTime = ""
+    scraperInitialTime = ""
+    scraperEndTime = ""
+
+    delimittedLine = [] # [0] = time,  [1] = func,  [2] = level,  [3] = message
+    errorCount = 0
+    criticalErrors = []
+
+    report = "Logger Report :"
+
+    with open("loggings.log",encoding='utf-8',errors='ignore') as fp: 
+        lines = fp.readlines() 
+        
+        for line in lines:
+            delimittedLine = line.split("|")
+            print(lines)
+            if delimittedLine and ( 1 < len(delimittedLine) < 5):
+
+                if (delimittedLine[3].find("INIT") > -1 ):              initialTime = delimittedLine[0].strip()
+                elif (delimittedLine[3].find("ENDING") > -1 ):          endTime = delimittedLine[0].strip()
+
+                elif (delimittedLine[3].find("CRAWLER STARTS") > -1 ):  crawlerInitialTime = delimittedLine[0].strip()
+                elif (delimittedLine[3].find("CRAWLER ENDS") > -1 ):    crawlerEndTime = delimittedLine[0].strip()
+
+                elif (delimittedLine[3].find("SCRAPER STARTS") > -1 ):  scraperInitialTime = delimittedLine[0].strip()
+                elif (delimittedLine[3].find("SCRAPER ENDS") > -1 ):    scraperEndTime = delimittedLine[0].strip()
+
+                elif(delimittedLine[2].strip() == "ERROR"):             errorCount += 1
+                elif(delimittedLine[2].strip() == "CRITICAL"):          criticalErrors.append(line)
+
+
+        initialTime_obj = datetime.strptime(initialTime, '%Y-%m-%d %H:%M:%S')
+        endTime_obj = datetime.strptime(endTime, '%Y-%m-%d %H:%M:%S')
+
+        crawlerInitialTime_obj = datetime.strptime(crawlerInitialTime, '%Y-%m-%d %H:%M:%S')
+        crawlerEndTime_obj = datetime.strptime(crawlerEndTime, '%Y-%m-%d %H:%M:%S')
+
+        scraperInitialTime_obj = datetime.strptime(scraperInitialTime, '%Y-%m-%d %H:%M:%S')
+        scraperEndTime_obj = datetime.strptime(scraperEndTime, '%Y-%m-%d %H:%M:%S')
+
+        timeSpent = endTime_obj - initialTime_obj
+        crawlerTimeSpent = crawlerEndTime_obj - crawlerInitialTime_obj
+        scraperTimeSpent = scraperEndTime_obj - scraperInitialTime_obj
+
+        report += ("\n| Start         = " + str(initialTime))
+        report += ("\n| End           = "   + str(endTime))
+        report += ("\n| Time Spent    = "    + str(timeSpent))
+        report += ("\n| Error Count   = "   + str(errorCount))
+        report += ("\n------------------------------------------")
+        report += ("\n| Crawler Time Spent          = " + str(crawlerTimeSpent))
+        report += ("\n| Scraper Time Spent          = " + str(scraperTimeSpent))
+
+
+        report += ("\n\nCritical Errors:")
+        if len(criticalErrors) == 0:
+            report += (" NONE")
+            report += ("\nStatus          = Succesfull")
+        else: #if (output file size > 10Kb) :: partially succesfull
+            for critic in criticalErrors:
+                report += ("\n * "+critic)
+            report += ("\nStatus          = Failure")
+        report += ("\n\n------------------------------------------------------------------------------")
+        report += ("\n\nVendors :")
+        for vendor in vendors:
+                report += ("\n - "+vendor)
+        report += ("\nProducts :")
+        for product in products:
+                report += ("\n - "+product)
+
+        report = report.translate(scrape_elements.special_char_map)   
+    return report
+    
 
 #############################################################################
 
@@ -201,7 +299,7 @@ def product_subpage_aligner(file_list):
     regex_array = []
     for file_holder in file_list:
         if (file_holder.find(".html") < 0):
-                logging.ERROR("File "+file_holder+" cannot be added as product, it is not a html file !")
+                logging.error("File "+file_holder+" cannot be added as product, it is not a html file !")
         else:
             file_name = str(os.path.splitext(file_holder)[0])
             if (file_name.find("_") < 0 ):
@@ -257,11 +355,14 @@ def html_writer(filePath,pageName,content):
     """
     soup = BeautifulSoup(content, "html.parser")
 
-    for script in soup.findAll(["script","meta","style","noscript","iframe","footer","header"]):
-        script.decompose()
-    
-    with open(filePath+"\\"+pageName+".html", "wb") as f:
-        f.write(soup.encode('utf-8'))
+    try:
+        for script in soup.findAll(["script","meta","style","noscript","iframe","footer","header"]):
+            script.decompose()
+        
+        with open(filePath+"\\"+pageName+".html", "wb") as f:
+            f.write(soup.encode('utf-8'))
+    except Exception as e:
+         logging.error(" url_name_strip error : "+ str(e))
 
 
 
@@ -275,12 +376,15 @@ def url_name_strip(pageName):
     end = pageName.rfind("?")
     occurences = 0 #pageName.count("-")
  
-    for char in pageName:
-        index += 1
-        if (char == "-") and (index > start):
-            occurences += 1
-            if (occurences > 2):
-                end = index
-                break
+    try:
+        for char in pageName:
+            index += 1
+            if (char == "-") and (index > start):
+                occurences += 1
+                if (occurences > 2):
+                    end = index
+                    break
+    except Exception as e:
+         logging.critical(" url_name_strip error : "+ str(e))
          
     return pageName[start:end]

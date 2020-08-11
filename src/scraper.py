@@ -76,7 +76,7 @@ async def scraper_queue(vendor,selected_products):
         #    await task
 
     except Exception as e:
-        logging.critical(" @@@@ ERROR IN QUEUE  @@@@ \n MESSAGE : "+ str(e))
+        logging.critical(" @@@@ ERROR IN SCRAPER QUEUE  @@@@ MESSAGE : "+ str(e))
 
 
 
@@ -144,5 +144,5 @@ async def product_scraper(taskName,soup,website,product):
         csv_lib.write_csv(website.get("name"),product,scrape_array)
         #TODO - append if already created
     except Exception as identifier:
-        logging.critical("ERROR IN" + taskName +" PRODUCT-SCRAPER "+ str(identifier))
+        logging.critical("ERROR IN " + taskName +" PRODUCT-SCRAPER "+ str(identifier))
 

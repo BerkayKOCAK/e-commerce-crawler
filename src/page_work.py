@@ -7,76 +7,84 @@ from urllib.parse import unquote
 from xml.dom import minidom
 
 def sitemap_scrape(vendor,sitemapContent):
-
-    soup = BeautifulSoup(sitemapContent, "html.parser")
-    website = scrape_elements.websites[vendor]
-    allLinks = soup.find_all("a",href=True)
+    """
+        Scrapes DOM content to list the products as array
+    """
     sitemapLinks = []
+    website = scrape_elements.websites[vendor]
+    try:
+        soup = BeautifulSoup(sitemapContent, "html.parser")
+        allLinks = soup.find_all("a",href=True)
+        
+        for link in allLinks:
+            
+            if ( "http" or "https") in link['href']: sitemapLinks.append(link['href'])
+            
+            elif "www." in link['href']:
+                slashNumber = 0
+                start = link['href'].find("/")
+                for char in link['href']:
+                    if( char == "/"): slashNumber += 1
+                    if( char == "w"): break
 
-    for link in allLinks:
-        
-        if ( "http" or "https") in link['href']: sitemapLinks.append(link['href'])
-        
-        elif "www." in link['href']:
-            slashNumber = 0
-            start = link['href'].find("/")
-            for char in link['href']:
-                if( char == "/"): slashNumber += 1
-                if( char == "w"): break
-
-            if slashNumber == 2: realLink = "https:"+link['href'][start:]
-            else: realLink = "https://"+link['href'][start:]
-        
-            sitemapLinks.append(realLink)
-        
-        elif(website["url"] not in link) and ( len(link['href']) > 2 ):
-            linkText = link['href'].replace("/","")
-            realLink = website["url"] + linkText
-            sitemapLinks.append(realLink)
-
+                if slashNumber == 2: realLink = "https:"+link['href'][start:]
+                else: realLink = "https://"+link['href'][start:]
+            
+                sitemapLinks.append(realLink)
+            
+            elif(website["url"] not in link) and ( len(link['href']) > 2 ):
+                linkText = link['href'].replace("/","")
+                realLink = website["url"] + linkText
+                sitemapLinks.append(realLink)
+    except Exception as e:
+        logging.critical("ERROR ! PRODUCT SEARCH IN XML MESSAGE : "+str(e))
     return sitemapLinks
 
 
 
-def product_search(product,sitemapList,excludedProductNames):
-    
+def product_search(product,sitemapList,excludedProductNames,vendorURL):
+    """
+    List based search
+    """
     productFound = []
     productWords_Arr = []
-    #logging.info(excludedProductNames)
+
     if("-" in product): productWords_Arr = product.lower().split("-")   
     else: productWords_Arr.append(product.lower())
 
     if sitemapList:
-        
-        for link in sitemapList:
-            
-            if (any(wordEx in link for wordEx in excludedProductNames) == False):
-                
-                if (len(productWords_Arr) > 0 ):
+        try:
+            for link in sitemapList:
+                temp = link.replace(vendorURL,"")
+                if (any(wordEx in temp for wordEx in excludedProductNames) == False):
                     
-                    count = 0
-                    for word in productWords_Arr:
+                    if (len(productWords_Arr) > 0 ):
                         
-                        if word in link.lower():
-                            count += 1
-                    if count != len(productWords_Arr): pass#logging.info("False")
-                    else: productFound.append(link)
+                        count = 0
+                        for word in productWords_Arr:
+                            
+                            if word in temp.lower():
+                                count += 1
+                        if count != len(productWords_Arr): pass
+                        else:productFound.append(link)
                     
-                elif (product in link) and (link not in productFound):
-                    productFound.append(link)
-            else: continue# Excluded Word fount
+                    elif (product in temp) and (temp not in productFound):productFound.append(link)
 
-        if len(productFound) == 0:
-                
-                #convert special letters like ğ-ö to g-o
-                temp = product
-                product = product.lower()
-                product = product.translate(scrape_elements.special_char_map)
-                logging.warning(" <<< Reconstructed the product string as = "+ product +" >>>")
-                if temp == product:
-                    logging.error(" <<< Reconstructed the product string previous one was same :( >>>")
-                    return productFound
-                productFound = product_search(product,sitemapList,excludedProductNames)
+                else: continue# Excluded Word fount
+
+            if len(productFound) == 0:
+                    
+                    #convert special letters like ğ-ö to g-o
+                    temp = product
+                    product = product.lower()
+                    product = product.translate(scrape_elements.special_char_map)
+                    logging.warning(" <<< Reconstructed the product string as = "+ product +" >>>")
+                    if temp == product:
+                        logging.error(" <<< Reconstructed the product string previous one was same :( >>>")
+                        return productFound
+                    productFound = product_search(product,sitemapList,excludedProductNames,vendorURL)
+        except Exception as e:
+            logging.critical("ERROR ! LIST BASED PRODUCT SEARCH MESSAGE : "+str(e))
     return productFound
 
 
@@ -125,7 +133,7 @@ def product_search_xml(product,sitemap_XML,excludedProductNames):
                     
                     
         except Exception as e:
-            logging.error("ERROR ! PRODUCT SEARCH IN XML \nMESSAGE : "+str(e))
+            logging.critical("ERROR ! PRODUCT SEARCH IN XML MESSAGE : "+str(e))
             
         #There might be special chracters for user's query. For example, süpürge --> supurge
         if len(productFound) == 0:
@@ -218,9 +226,9 @@ async def page_has_scrape(vendor,page_URL):
     vendor = Vendor name\n
     page_URL = URL of the page to check\n
     """
-    try:
-        content = await request_lib.GET_request_async(vendor,page_URL)
+    content = await request_lib.GET_request_async(vendor,page_URL)
 
+    try:
         if(content != None):
             soup = BeautifulSoup(content, "html.parser")
             website = scrape_elements.websites[vendor]
