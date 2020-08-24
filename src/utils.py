@@ -7,7 +7,6 @@ from datetime import datetime
 from pathlib import Path
 from src import scrape_elements
 from bs4 import BeautifulSoup
-from termcolor import colored
 
 
 #############################################################################

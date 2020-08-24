@@ -135,10 +135,15 @@ async def sub_page_worker(vendor,product,page,productFolder):
     
     while pageCount <= lastPageNum:
             
+            
+
             subPage = page_work.sub_page_URL_generator(vendor,page,pageCount)
             subPageName = utils.url_name_strip(subPage) + "-" + str(pageCount)
             content = await request_lib.GET_request_async(vendor,subPage)
-            
+            if lastPageNum > 100 :
+                if (pageCount == (lastPageNum // 2)): await asyncio.sleep(2)
+                elif (pageCount == (lastPageNum // 2) + ( (lastPageNum // 2) //2) ): await asyncio.sleep(2)
+
             if content is not None:
                 utils.html_writer(productFolder,subPageName,content)
                 logging.info("HTML PAGE WRITTEN : "+ subPageName)
