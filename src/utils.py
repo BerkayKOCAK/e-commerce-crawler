@@ -78,6 +78,22 @@ def archieveLog ():
         
    
 
+def get_directory_size(directory):
+    """Returns the `directory` size in bytes."""
+    total = 0
+    try:
+        for entry in os.scandir(directory):
+            if entry.is_file():
+                total += entry.stat().st_size
+            elif entry.is_dir():
+                total += get_directory_size(entry.path)
+
+    except NotADirectoryError:
+        return os.path.getsize(directory)
+    except PermissionError:
+        return 0
+        
+    return total
 
 
 
@@ -95,7 +111,7 @@ def logStatistics (vendors,products):
     crawlerEndTime = ""
     scraperInitialTime = ""
     scraperEndTime = ""
-
+    folderSize = 0
     delimittedLine = [] # [0] = time,  [1] = func,  [2] = level,  [3] = message
     errorCount = 0
     criticalErrors = []
@@ -149,10 +165,14 @@ def logStatistics (vendors,products):
         if len(criticalErrors) == 0:
             report += (" NONE")
             report += ("\nStatus          = Succesfull")
-        else: #if (output file size > 10Kb) :: partially succesfull
+        else:
             for critic in criticalErrors:
-                report += ("\n * "+critic)
-            report += ("\nStatus          = Failure")
+                    report += ("\n * "+critic)
+            folderSize = get_directory_size('output')
+            if ( folderSize > 1000): report += ("\nStatus          = Partially Succesfull")
+            else: report += ("\nStatus          = Failure")
+
+        report += ("\nOutput Folder Size        = "+ str(folderSize / 1000000) + " Mb ")        
         report += ("\n\n------------------------------------------------------------------------------")
         report += ("\n\nVendors :")
         for vendor in vendors:

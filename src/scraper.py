@@ -36,6 +36,7 @@ async def scraper_queue(vendor,selected_products):
     """
     count = 1
     tasks = []
+    boolSwitch = False
     try:    
         for productName in selected_products: 
             page = 1
@@ -48,7 +49,7 @@ async def scraper_queue(vendor,selected_products):
                         if(scrape_elements.websites.get(str(vendor)) != None):
                             with open(fileToOpen, encoding='utf8') as infile:
                                 soup = BeautifulSoup(infile, "html.parser")
-                                if (count > 200 ): await asyncio.sleep(5)
+                                if (count > 100 ) and (count % 25 == 0): await asyncio.sleep(5)
                                 logging.info("CREATING WORKER_"+str(count)+" FOR VENDOR : "+ str(vendor)+" AND PRODUCT : "+productName + " FOR PAGE : "+str(fileToOpen))
                                 tasks.append(asyncio.ensure_future(product_scraper(vendor+"_"+str(count), soup, scrape_elements.websites.get(vendor), productName )))
                                 count = count + 1  

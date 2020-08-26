@@ -10,13 +10,14 @@ Written with Python 3.7.3
 This version of crawler is to run on server as scheduled-script.
 
 """
-
 import asyncio
 import logging
 from src import crawler, utils, scraper, mail_service
+import subprocess
+
 
 def main():
-
+        
         utils.file_integrity()
         utils.archieveLog()
 
@@ -51,5 +52,6 @@ def main():
        
         report = utils.logStatistics(vendors,products)
         asyncio.run(sender.sendmail(sendTo, emailSubject, report))
+       
 main()
 exit(0)

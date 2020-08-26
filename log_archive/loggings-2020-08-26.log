@@ -1,0 +1,240 @@
+2020-08-24 19:09:37 | main | INFO | ------------------------------------- INIT ------------------------------------------------------------
+2020-08-24 19:09:37 | main | INFO | CRAWLER STARTS
+2020-08-24 19:09:37 | vendor_queue | WARNING | Sitemap Category url: https://www.hepsiburada.com/sitemaps/kategoriler/sitemap_1.xml
+2020-08-24 19:09:38 | vendor_queue | INFO | Task Created For Vendor : hepsiburada with regular sitemap
+2020-08-24 19:09:38 | vendor_queue | WARNING | Sitemap Category url: https://www.teknosa.com/medias/sys_master/sitemaps/sitemaps/1752952165/Category-tr-TRY.xml
+2020-08-24 19:09:38 | product_queue | INFO | Task Created For Product : bilgisayar
+2020-08-24 19:09:39 | product_search_xml | INFO | Searching bilgisayar in sitemap XML 
+2020-08-24 19:09:39 | product_queue | INFO | Task Created For Product : cep-telefonu
+2020-08-24 19:09:39 | product_search_xml | INFO | Searching cep-telefonu in sitemap XML 
+2020-08-24 19:09:39 | product_queue | INFO | Task Created For Product : notebook
+2020-08-24 19:09:40 | product_search_xml | INFO | Searching notebook in sitemap XML 
+2020-08-24 19:09:40 | product_queue | INFO | Task Created For Product : laptop
+2020-08-24 19:09:40 | product_search_xml | INFO | Searching laptop in sitemap XML 
+2020-08-24 19:09:41 | product_queue | INFO |  Product Tasks are started for : hepsiburada  
+2020-08-24 19:09:41 | page_queue | INFO | hepsiburadaPage queue, product : bilgisayar
+2020-08-24 19:09:41 | page_queue | INFO | PAGE : https://www.hepsiburada.com/laptop-notebook-dizustu-bilgisayarlar-c-98
+2020-08-24 19:09:41 | page_queue | INFO | hepsiburadaPage queue, product : cep-telefonu
+2020-08-24 19:09:41 | page_queue | INFO | PAGE : https://www.hepsiburada.com/cep-telefonu-bluetooth-urunleri-c-16216
+2020-08-24 19:09:41 | page_queue | INFO | hepsiburadaPage queue, product : notebook
+2020-08-24 19:09:41 | page_queue | INFO | PAGE : https://www.hepsiburada.com/laptop-notebook-dizustu-bilgisayarlar-c-98
+2020-08-24 19:09:41 | page_queue | INFO | hepsiburadaPage queue, product : laptop
+2020-08-24 19:09:41 | page_queue | INFO | PAGE : https://www.hepsiburada.com/laptop-notebook-dizustu-bilgisayarlar-c-98
+2020-08-24 19:09:41 | vendor_queue | INFO | Task Created For Vendor : teknosa with regular sitemap
+2020-08-24 19:09:41 | vendor_queue | WARNING | Sitemap Category url: https://www.mediamarkt.com.tr/sitemap/sitemap-productlist.xml
+2020-08-24 19:09:41 | product_queue | INFO | Task Created For Product : bilgisayar
+2020-08-24 19:09:41 | product_search_xml | INFO | Searching bilgisayar in sitemap XML 
+2020-08-24 19:09:41 | product_queue | INFO | Task Created For Product : cep-telefonu
+2020-08-24 19:09:41 | product_search_xml | INFO | Searching cep-telefonu in sitemap XML 
+2020-08-24 19:09:41 | product_queue | INFO | Task Created For Product : notebook
+2020-08-24 19:09:41 | product_search_xml | INFO | Searching notebook in sitemap XML 
+2020-08-24 19:09:41 | product_queue | INFO | Task Created For Product : laptop
+2020-08-24 19:09:41 | product_search_xml | INFO | Searching laptop in sitemap XML 
+2020-08-24 19:09:41 | product_queue | INFO |  Product Tasks are started for : teknosa  
+2020-08-24 19:09:41 | page_queue | INFO | teknosaPage queue, product : bilgisayar
+2020-08-24 19:09:41 | page_queue | INFO | PAGE : https://www.teknosa.com/bilgisayar-c-102
+2020-08-24 19:09:41 | page_queue | INFO | teknosaPage queue, product : cep-telefonu
+2020-08-24 19:09:41 | page_queue | INFO | PAGE : https://www.teknosa.com/cep-telefonu-c-100001
+2020-08-24 19:09:41 | page_queue | INFO | teknosaPage queue, product : notebook
+2020-08-24 19:09:41 | page_queue | INFO | PAGE : https://www.teknosa.com/windows-10lu-intel-islemcili-notebook-gaming-c-3349
+2020-08-24 19:09:41 | page_queue | INFO | teknosaPage queue, product : laptop
+2020-08-24 19:09:41 | page_queue | INFO | PAGE : https://www.teknosa.com/notebook-laptop-c-1020101
+2020-08-24 19:09:41 | page_queue | INFO | PAGE : https://www.hepsiburada.com/ikinci-el-cep-telefonu-c-60006410
+2020-08-24 19:09:43 | page_queue | INFO | PAGE : https://www.hepsiburada.com/demo-cep-telefonu-c-60006890
+2020-08-24 19:09:43 | sub_page_worker | INFO | SUB-PAGE Task for product : cep-telefonu - sub page queue, page : https://www.hepsiburada.com/ikinci-el-cep-telefonu-c-60006410
+2020-08-24 19:09:43 | page_queue | INFO | PAGE : https://www.hepsiburada.com/bilgisayar-isletim-sistemleri-c-139
+2020-08-24 19:09:43 | sub_page_worker | INFO | SUB-PAGE Task for product : bilgisayar - sub page queue, page : https://www.hepsiburada.com/laptop-notebook-dizustu-bilgisayarlar-c-98
+2020-08-24 19:09:44 | page_queue | INFO | PAGE : https://www.hepsiburada.com/oyuncu-laptoplari-c-95583
+2020-08-24 19:09:44 | sub_page_worker | INFO | SUB-PAGE Task for product : laptop - sub page queue, page : https://www.hepsiburada.com/laptop-notebook-dizustu-bilgisayarlar-c-98
+2020-08-24 19:09:44 | page_queue | INFO |  Paging Tasks are started for product : notebook  
+2020-08-24 19:09:44 | page_queue | INFO |  Paging Tasks are started for product : cep-telefonu  
+2020-08-24 19:09:44 | sub_page_worker | INFO | SUB-PAGE Task for product : notebook - sub page queue, page : https://www.hepsiburada.com/laptop-notebook-dizustu-bilgisayarlar-c-98
+2020-08-24 19:09:44 | page_queue | INFO | PAGE : https://www.hepsiburada.com/oyun-bilgisayarlari-c-409
+2020-08-24 19:09:44 | sub_page_worker | INFO | SUB-PAGE Task for product : bilgisayar - sub page queue, page : https://www.hepsiburada.com/bilgisayar-isletim-sistemleri-c-139
+2020-08-24 19:09:46 | vendor_queue | INFO | Task Created For Vendor : media_markt with regular sitemap
+2020-08-24 19:09:46 | product_queue | INFO | Task Created For Product : bilgisayar
+2020-08-24 19:09:46 | product_search_xml | INFO | Searching bilgisayar in sitemap XML 
+2020-08-24 19:09:46 | product_queue | INFO | Task Created For Product : cep-telefonu
+2020-08-24 19:09:46 | product_search_xml | INFO | Searching cep-telefonu in sitemap XML 
+2020-08-24 19:09:46 | product_search_xml | WARNING |  <<< Reconstructed the product string as = cep-telefonu >>>
+2020-08-24 19:09:46 | product_search_xml | ERROR |  <<< Reconstructed the product string but found none again :( >>>
+2020-08-24 19:09:46 | product_queue | ERROR |  No product found with name cep-telefonu 
+2020-08-24 19:09:46 | product_queue | INFO | Task Created For Product : notebook
+2020-08-24 19:09:46 | product_search_xml | INFO | Searching notebook in sitemap XML 
+2020-08-24 19:09:46 | product_queue | INFO | Task Created For Product : laptop
+2020-08-24 19:09:46 | product_search_xml | INFO | Searching laptop in sitemap XML 
+2020-08-24 19:09:46 | product_queue | INFO |  Product Tasks are started for : media_markt  
+2020-08-24 19:09:46 | page_queue | INFO | media_marktPage queue, product : bilgisayar
+2020-08-24 19:09:46 | page_queue | INFO | PAGE : https://www.mediamarkt.com.tr/tr/category/_bilgisayar-504925.html
+2020-08-24 19:09:46 | page_queue | INFO | media_marktPage queue, product : notebook
+2020-08-24 19:09:46 | page_queue | INFO | PAGE : https://www.mediamarkt.com.tr/tr/category/_notebook-504927.html
+2020-08-24 19:09:46 | page_queue | INFO | media_marktPage queue, product : laptop
+2020-08-24 19:09:46 | page_queue | INFO | PAGE : https://www.mediamarkt.com.tr/tr/category/_laptop-ram-639559.html
+2020-08-24 19:09:47 | page_queue | INFO | PAGE : https://www.hepsiburada.com/laptop-sehpalari-c-18042585
+2020-08-24 19:09:47 | sub_page_worker | INFO | SUB-PAGE Task for product : laptop - sub page queue, page : https://www.hepsiburada.com/oyuncu-laptoplari-c-95583
+2020-08-24 19:09:48 | page_queue | INFO | PAGE : https://www.hepsiburada.com/bilgisayar-drumlar-c-636
+2020-08-24 19:09:48 | sub_page_worker | INFO | SUB-PAGE Task for product : bilgisayar - sub page queue, page : https://www.hepsiburada.com/oyun-bilgisayarlari-c-409
+2020-08-24 19:09:49 | product_queue | CRITICAL |  === ERROR IN PRODUCT QUEUE  === MESSAGE : 
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | page_queue | INFO | PAGE : https://www.teknosa.com/bilgisayarlar-c-10201
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | page_queue | INFO |  Paging Task is ended for product : cep-telefonu  
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | sitemap_scrape | CRITICAL | ERROR ! PRODUCT SEARCH IN XML MESSAGE : object of type 'NoneType' has no len()
+2020-08-24 19:09:49 | vendor_queue | INFO | Task Created For Vendor : gittigidiyor with non-XML sitemap
+2020-08-24 19:09:49 | vendor_queue | WARNING | Sitemap Category url: https://www.trendyol.com/sitemap_categories.xml
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | page_queue | INFO |  Paging Task is ended for product : laptop  
+2020-08-24 19:09:49 | product_queue | CRITICAL |  === ERROR IN PRODUCT QUEUE  === MESSAGE : 
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | page_queue | INFO | PAGE : https://www.mediamarkt.com.tr/tr/category/_taþýnabilir-bilgisayarlar-504926.html
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | product_queue | CRITICAL |  === ERROR IN PRODUCT QUEUE  === MESSAGE : 
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | page_queue | INFO | PAGE : https://www.hepsiburada.com/bilgisayar-oyunlari-c-10278
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | page_queue | INFO | PAGE : https://www.hepsiburada.com/ikinci-el-dizustu-bilgisayar-laptop-c-80365001
+2020-08-24 19:09:49 | page_queue | CRITICAL |  ERROR IN PAGE QUEUE TASK MESSAGE : 
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | page_queue | INFO | PAGE : https://www.mediamarkt.com.tr/tr/category/_laptop-soðutucu-675563.html
+2020-08-24 19:09:49 | page_queue | CRITICAL |  ERROR IN PAGE QUEUE TASK MESSAGE : 
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | page_queue | INFO | PAGE : https://www.teknosa.com/notebook-tabletler-c-3127
+2020-08-24 19:09:49 | GET_request_async | ERROR |  @@@@ ERROR IN ASYNCH REQUEST @@@@ MESSAGE : 
+2020-08-24 19:09:49 | page_queue | INFO |  Paging Task is ended for product : notebook  
+2020-08-24 19:09:49 | product_queue | INFO | Task Created For Product : bilgisayar
+2020-08-24 19:09:49 | product_queue | ERROR |  No product found with name bilgisayar 
+2020-08-24 19:09:49 | product_queue | INFO | Task Created For Product : cep-telefonu
+2020-08-24 19:09:49 | product_queue | ERROR |  No product found with name cep-telefonu 
+2020-08-24 19:09:49 | product_queue | INFO | Task Created For Product : notebook
+2020-08-24 19:09:49 | product_queue | ERROR |  No product found with name notebook 
+2020-08-24 19:09:49 | product_queue | INFO | Task Created For Product : laptop
+2020-08-24 19:09:49 | product_queue | ERROR |  No product found with name laptop 
+2020-08-24 19:09:49 | product_queue | INFO |  Product Tasks are ended for gittigidiyor  
+2020-08-24 19:09:52 | _invoke_callbacks | ERROR | exception calling callback for <Future at 0x28c4dc004a8 state=finished returned Response>
+Traceback (most recent call last):
+  File "C:\Program Files\Python37\lib\concurrent\futures\_base.py", line 324, in _invoke_callbacks
+    callback(self)
+  File "C:\Program Files\Python37\lib\asyncio\futures.py", line 362, in _call_set_state
+    dest_loop.call_soon_threadsafe(_set_state, destination, source)
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 733, in call_soon_threadsafe
+    self._check_closed()
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 480, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2020-08-24 19:09:52 | _invoke_callbacks | ERROR | exception calling callback for <Future at 0x28c4dbd1e80 state=finished returned Response>
+Traceback (most recent call last):
+  File "C:\Program Files\Python37\lib\concurrent\futures\_base.py", line 324, in _invoke_callbacks
+    callback(self)
+  File "C:\Program Files\Python37\lib\asyncio\futures.py", line 362, in _call_set_state
+    dest_loop.call_soon_threadsafe(_set_state, destination, source)
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 733, in call_soon_threadsafe
+    self._check_closed()
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 480, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2020-08-24 19:09:53 | _invoke_callbacks | ERROR | exception calling callback for <Future at 0x28c4dbd1f98 state=finished returned Response>
+Traceback (most recent call last):
+  File "C:\Program Files\Python37\lib\concurrent\futures\_base.py", line 324, in _invoke_callbacks
+    callback(self)
+  File "C:\Program Files\Python37\lib\asyncio\futures.py", line 362, in _call_set_state
+    dest_loop.call_soon_threadsafe(_set_state, destination, source)
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 733, in call_soon_threadsafe
+    self._check_closed()
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 480, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2020-08-24 19:09:54 | _invoke_callbacks | ERROR | exception calling callback for <Future at 0x28c4dc005c0 state=finished returned Response>
+Traceback (most recent call last):
+  File "C:\Program Files\Python37\lib\concurrent\futures\_base.py", line 324, in _invoke_callbacks
+    callback(self)
+  File "C:\Program Files\Python37\lib\asyncio\futures.py", line 362, in _call_set_state
+    dest_loop.call_soon_threadsafe(_set_state, destination, source)
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 733, in call_soon_threadsafe
+    self._check_closed()
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 480, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2020-08-24 19:09:54 | _invoke_callbacks | ERROR | exception calling callback for <Future at 0x28c4dc00390 state=finished returned Response>
+Traceback (most recent call last):
+  File "C:\Program Files\Python37\lib\concurrent\futures\_base.py", line 324, in _invoke_callbacks
+    callback(self)
+  File "C:\Program Files\Python37\lib\asyncio\futures.py", line 362, in _call_set_state
+    dest_loop.call_soon_threadsafe(_set_state, destination, source)
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 733, in call_soon_threadsafe
+    self._check_closed()
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 480, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2020-08-24 19:09:54 | _invoke_callbacks | ERROR | exception calling callback for <Future at 0x28c4dfa0ef0 state=finished returned Response>
+Traceback (most recent call last):
+  File "C:\Program Files\Python37\lib\concurrent\futures\_base.py", line 324, in _invoke_callbacks
+    callback(self)
+  File "C:\Program Files\Python37\lib\asyncio\futures.py", line 362, in _call_set_state
+    dest_loop.call_soon_threadsafe(_set_state, destination, source)
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 733, in call_soon_threadsafe
+    self._check_closed()
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 480, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2020-08-24 19:09:55 | _invoke_callbacks | ERROR | exception calling callback for <Future at 0x28c4dc008d0 state=finished returned Response>
+Traceback (most recent call last):
+  File "C:\Program Files\Python37\lib\concurrent\futures\_base.py", line 324, in _invoke_callbacks
+    callback(self)
+  File "C:\Program Files\Python37\lib\asyncio\futures.py", line 362, in _call_set_state
+    dest_loop.call_soon_threadsafe(_set_state, destination, source)
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 733, in call_soon_threadsafe
+    self._check_closed()
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 480, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2020-08-24 19:09:56 | _invoke_callbacks | ERROR | exception calling callback for <Future at 0x28c4dc00710 state=finished returned Response>
+Traceback (most recent call last):
+  File "C:\Program Files\Python37\lib\concurrent\futures\_base.py", line 324, in _invoke_callbacks
+    callback(self)
+  File "C:\Program Files\Python37\lib\asyncio\futures.py", line 362, in _call_set_state
+    dest_loop.call_soon_threadsafe(_set_state, destination, source)
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 733, in call_soon_threadsafe
+    self._check_closed()
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 480, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2020-08-24 19:09:56 | _invoke_callbacks | ERROR | exception calling callback for <Future at 0x28c4df47eb8 state=finished returned Response>
+Traceback (most recent call last):
+  File "C:\Program Files\Python37\lib\concurrent\futures\_base.py", line 324, in _invoke_callbacks
+    callback(self)
+  File "C:\Program Files\Python37\lib\asyncio\futures.py", line 362, in _call_set_state
+    dest_loop.call_soon_threadsafe(_set_state, destination, source)
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 733, in call_soon_threadsafe
+    self._check_closed()
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 480, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2020-08-24 19:09:57 | _invoke_callbacks | ERROR | exception calling callback for <Future at 0x28c4de36198 state=finished returned Response>
+Traceback (most recent call last):
+  File "C:\Program Files\Python37\lib\concurrent\futures\_base.py", line 324, in _invoke_callbacks
+    callback(self)
+  File "C:\Program Files\Python37\lib\asyncio\futures.py", line 362, in _call_set_state
+    dest_loop.call_soon_threadsafe(_set_state, destination, source)
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 733, in call_soon_threadsafe
+    self._check_closed()
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 480, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2020-08-24 19:09:57 | _invoke_callbacks | ERROR | exception calling callback for <Future at 0x28c4dbd1f60 state=finished returned Response>
+Traceback (most recent call last):
+  File "C:\Program Files\Python37\lib\concurrent\futures\_base.py", line 324, in _invoke_callbacks
+    callback(self)
+  File "C:\Program Files\Python37\lib\asyncio\futures.py", line 362, in _call_set_state
+    dest_loop.call_soon_threadsafe(_set_state, destination, source)
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 733, in call_soon_threadsafe
+    self._check_closed()
+  File "C:\Program Files\Python37\lib\asyncio\base_events.py", line 480, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
