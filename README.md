@@ -2,7 +2,7 @@
 
 Welcome To E-Commerce Crawler.
 
-**This branch is designed to run on a system with scheduled tasks and has no GUI or CLI.**
+**This branch is designed to run on a system with scheduled tasks and thus, it has no GUI or CLI.**
 
 ## Requirements & Install
 You need to have these following packages in your environment :
