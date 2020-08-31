@@ -1,6 +1,7 @@
 # e-commerce-crawler
 
-Welcome To E-Commerce Crawler
+Welcome To E-Commerce Crawler.
+
 **This branch is designed to run on a system with scheduled tasks and has no GUI or CLI.**
 
 ## Requirements & Install
