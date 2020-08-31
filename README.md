@@ -1,17 +1,12 @@
 # e-commerce-crawler
 
 Welcome To E-Commerce Crawler
+**This branch is designed to run on a system with scheduled tasks and has no GUI or CLI.**
 
 ## Requirements & Install
 You need to have these following packages in your environment :
 
 *beautifulsoup4==4.9.0
-
-*PyInquirer==1.0.3
-
-*pyfiglet==0.7
-
-*termcolor 1.1.0
 
 To install packages in requirements.txt run ;
 
