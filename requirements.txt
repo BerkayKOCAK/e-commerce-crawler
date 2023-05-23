@@ -3,4 +3,4 @@ PyInquirer==1.0.3
 pyfiglet==0.7
 prompt_toolkit==1.0.14
 termcolor==1.1.0
-requests==2.24.0
+requests==2.31.0
